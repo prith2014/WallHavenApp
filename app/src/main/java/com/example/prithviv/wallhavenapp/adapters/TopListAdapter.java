@@ -1,4 +1,4 @@
-package com.example.prithviv.wallhavenapp;
+package com.example.prithviv.wallhavenapp.adapters;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
+
+import com.example.prithviv.wallhavenapp.R;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     private LayoutInflater mInflater;
     private AdapterView.OnItemClickListener mClickListener;
 
-    TopListAdapter(Context context, List<String> data) {
+    public TopListAdapter(Context context, List<String> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }

@@ -1,4 +1,4 @@
-package com.example.prithviv.wallhavenapp;
+package com.example.prithviv.wallhavenapp.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+
+import com.example.prithviv.wallhavenapp.R;
 
 
 /**

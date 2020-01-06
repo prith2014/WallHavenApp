@@ -1,7 +1,11 @@
-package com.example.prithviv.wallhavenapp;
+package com.example.prithviv.wallhavenapp.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
+
+import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.fragments.HomeFragment;
+import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

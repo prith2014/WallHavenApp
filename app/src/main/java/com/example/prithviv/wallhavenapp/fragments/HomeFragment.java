@@ -1,4 +1,4 @@
-package com.example.prithviv.wallhavenapp;
+package com.example.prithviv.wallhavenapp.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -18,7 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
+import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.adapters.TopListAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
