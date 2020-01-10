@@ -9,17 +9,19 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.models.Wallpaper;
 
 import java.util.List;
 
 
 public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHolder> {
 
-    private List<String> mData;
+    //private List<String> mData;
+    private List<Wallpaper> mData;
     private LayoutInflater mInflater;
     private AdapterView.OnItemClickListener mClickListener;
 
-    public TopListAdapter(Context context, List<String> data) {
+    public TopListAdapter(Context context, List<Wallpaper> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -34,14 +36,18 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     // Binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String url = mData.get(position);
+        String url = mData.get(position).getColors().get(1);
         viewHolder.myTextView.setText(url);
     }
 
     // Total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mData == null) {
+            return 0;
+        } else {
+            return mData.size();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
