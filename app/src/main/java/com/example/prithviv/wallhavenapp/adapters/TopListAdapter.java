@@ -36,7 +36,7 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     // Binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String url = mData.get(position).getColors().get(1);
+        String url = mData.get(position).getURL();
         viewHolder.myTextView.setText(url);
     }
 

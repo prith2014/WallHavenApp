@@ -24,13 +24,10 @@ import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -43,19 +40,12 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // Top List URL does not give the uploaders or tags of each wallpaper
     private static final String topListURL = "https://wallhaven.cc/api/v1/search";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     private RequestQueue queue;
-    private RecyclerView recyclerView;
+    private RecyclerView homeRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<String> topListURLs;
@@ -67,20 +57,10 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,8 +69,7 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
 
     }
@@ -101,17 +80,17 @@ public class HomeFragment extends Fragment {
         queue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
         // RecyclerView
-        recyclerView = view.findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
+        homeRecyclerView = homeView.findViewById(R.id.my_recycler_view);
+        homeRecyclerView.setHasFixedSize(true);
         // Linear layout manager
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
+        homeRecyclerView.setLayoutManager(layoutManager);
 
         topListURLs = new ArrayList<>();
 
-        GSONTopList();
+        getTopList();
 
         /*
         try {
@@ -126,12 +105,12 @@ public class HomeFragment extends Fragment {
         // RecyclerView List Adapter
         //mAdapter = new TopListAdapter(getActivity().getApplicationContext(), topListURLs);
         //mAdapter = new TopListAdapter(getActivity().getApplicationContext(), topListWallpapers);
-        //recyclerView.setAdapter(mAdapter);
+        //homeRecyclerView.setAdapter(mAdapter);
 
-        return view;
+        return homeView;
     }
 
-    private void GSONTopList() {
+    private void getTopList() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, topListURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -139,12 +118,9 @@ public class HomeFragment extends Fragment {
                     Log.d("JSON", response.getJSONArray("data").toString());
                     Gson gson = new Gson();
 
-                    //ArrayList<OBJECT> yourArray = new Gson().fromJson(jsonString, new TypeToken<List<OBJECT>>(){}.getType());
                     topListWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-                    Log.d("URL", topListWallpapers.get(1).getURL());
-
-                    //listOfWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
                     //Log.d("URL", topListWallpapers.get(1).getURL());
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -165,7 +141,7 @@ public class HomeFragment extends Fragment {
 
     public void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
         TopListAdapter myTopListAdapter = new TopListAdapter(getActivity(), wallpapers);
-        recyclerView.setAdapter(myTopListAdapter);
+        homeRecyclerView.setAdapter(myTopListAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
