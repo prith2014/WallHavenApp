@@ -2,21 +2,25 @@ package com.example.prithviv.wallhavenapp.adapters;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 
 public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHolder> {
 
-    //private List<String> mData;
     private List<Wallpaper> mData;
     private LayoutInflater mInflater;
     private AdapterView.OnItemClickListener mClickListener;
@@ -36,8 +40,11 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     // Binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String url = mData.get(position).getURL();
-        viewHolder.myTextView.setText(url);
+        String urlThumbOriginal = mData.get(position).getThumbsOriginal();
+        // TODO: Load Thumbnail using Fresco
+        Drawable wallpaperDrawable = loadImageFromWebOperations(urlThumbOriginal);
+
+        viewHolder.myImageView.setImageDrawable(wallpaperDrawable);
     }
 
     // Total number of rows
@@ -51,11 +58,11 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        ImageView myImageView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.info_text);
+            myImageView = itemView.findViewById(R.id.image_view);
             itemView.setOnClickListener(this);
         }
 
@@ -65,5 +72,13 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
         }
     }
 
-
+    public static Drawable loadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

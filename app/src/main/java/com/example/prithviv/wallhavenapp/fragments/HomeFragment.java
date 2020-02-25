@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.TopListAdapter;
+import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,15 +42,16 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
     // Top List URL does not give the uploaders or tags of each wallpaper
-    private static final String topListURL = "https://wallhaven.cc/api/v1/search";
+    private static final String latestWallpapersURL = "https://wallhaven.cc/api/v1/search";
+    private static final String topListWallpapersURL = "https://wallhaven.cc/api/v1/search?toplist";
 
     private OnFragmentInteractionListener mListener;
     private RequestQueue queue;
     private RecyclerView homeRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private List<String> topListURLs;
-    private List<Wallpaper> topListWallpapers = new ArrayList<>();
+    private List<Wallpaper> latestWallpapers = new ArrayList<>();
+    private Meta latestWallpapersMeta;
     private String topListJSONString;
     private ImageView imageView;
 
@@ -88,8 +90,6 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         homeRecyclerView.setLayoutManager(layoutManager);
 
-        topListURLs = new ArrayList<>();
-
         getTopList();
 
         /*
@@ -102,31 +102,28 @@ public class HomeFragment extends Fragment {
         }
         */
 
-        // RecyclerView List Adapter
-        //mAdapter = new TopListAdapter(getActivity().getApplicationContext(), topListURLs);
-        //mAdapter = new TopListAdapter(getActivity().getApplicationContext(), topListWallpapers);
-        //homeRecyclerView.setAdapter(mAdapter);
 
         return homeView;
     }
 
     private void getTopList() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, topListURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     Log.d("JSON", response.getJSONArray("data").toString());
+                    //Log.d("meta", response.getJSONObject("meta").toString());
                     Gson gson = new Gson();
 
-                    topListWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-                    //Log.d("URL", topListWallpapers.get(1).getURL());
-
+                    latestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
+                    latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
+                    Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
+                    Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                setRecyclerViewAdapter(topListWallpapers);
+                setRecyclerViewAdapter(latestWallpapers);
 
             }
         }, new Response.ErrorListener() {
@@ -182,5 +179,6 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
 
