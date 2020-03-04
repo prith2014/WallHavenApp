@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.HomeFragment;
 import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mTextMessage = findViewById(R.id.message);
-        testImage = findViewById(R.id.testimage);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Fragments

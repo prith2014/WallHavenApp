@@ -3,20 +3,22 @@ package com.example.prithviv.wallhavenapp.adapters;
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
+import java.util.Random;
 
 
 public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHolder> {
@@ -42,9 +44,10 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         String urlThumbOriginal = mData.get(position).getThumbsOriginal();
         // TODO: Load Thumbnail using Fresco
-        Drawable wallpaperDrawable = loadImageFromWebOperations(urlThumbOriginal);
-
-        viewHolder.myImageView.setImageDrawable(wallpaperDrawable);
+        final ImageRequest imageRequest =
+                ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
+                        .build();
+        viewHolder.mSimpleDraweeView.setImageRequest(imageRequest);
     }
 
     // Total number of rows
@@ -58,27 +61,19 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView myImageView;
+        private final Random sRandom = new Random();
+        private SimpleDraweeView mSimpleDraweeView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myImageView = itemView.findViewById(R.id.image_view);
-            itemView.setOnClickListener(this);
+            mSimpleDraweeView = itemView.findViewById(R.id.my_image_view);
+            mSimpleDraweeView.getHierarchy().setPlaceholderImage(new ColorDrawable(sRandom.nextInt()));
+            //itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             //if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
-        }
-    }
-
-    public static Drawable loadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
         }
     }
 }
