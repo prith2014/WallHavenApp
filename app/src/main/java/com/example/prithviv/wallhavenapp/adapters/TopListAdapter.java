@@ -43,7 +43,6 @@ public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         String urlThumbOriginal = mData.get(position).getThumbsOriginal();
-        // TODO: Load Thumbnail using Fresco
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
                         .build();

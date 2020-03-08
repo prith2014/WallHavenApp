@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -43,6 +44,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     // Top List URL does not give the uploaders or tags of each wallpaper
     private static final String latestWallpapersURL = "https://wallhaven.cc/api/v1/search";
+    // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
     private static final String topListWallpapersURL = "https://wallhaven.cc/api/v1/search?toplist";
 
     private OnFragmentInteractionListener mListener;
@@ -52,8 +54,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private List<Wallpaper> latestWallpapers = new ArrayList<>();
     private Meta latestWallpapersMeta;
-    private String topListJSONString;
-    private ImageView imageView;
+    private int pageNumber;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -79,7 +80,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        queue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
 
         // Inflate the layout for this fragment
         View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
@@ -90,50 +91,24 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         homeRecyclerView.setLayoutManager(layoutManager);
 
-        getTopList();
+        // TODO: Figure out why page number won't update properly
+        /*
+        My guess is the time is takes to retrieve JSON, must investigate further
+         */
+        getLatestWallpapers();
+        getLatestWallpapers();
+        getLatestWallpapers();
 
         /*
         try {
             //set time in mili
-            Thread.sleep(3000);
-
+            Thread.sleep(5000);
         }catch (Exception e){
             e.printStackTrace();
         }
         */
 
-
         return homeView;
-    }
-
-    private void getTopList() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Log.d("JSON", response.getJSONArray("data").toString());
-                    //Log.d("meta", response.getJSONObject("meta").toString());
-                    Gson gson = new Gson();
-
-                    latestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-                    latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
-                    Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
-                    Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                setRecyclerViewAdapter(latestWallpapers);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        queue.add(request);
     }
 
     public void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
@@ -178,6 +153,53 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getLatestWallpapers() {
+        String latestWallpapersURLPage = getLatestWallpapersURLPage();
+        Log.d("URL", latestWallpapersURLPage);
+        JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
+
+        queue.add(request);
+    }
+
+    public String getLatestWallpapersURLPage() {
+        pageNumber++;
+        return latestWallpapersURL + "?page=" + pageNumber;
+    }
+
+    private JsonObjectRequest getNextPageLatestWallpapers(String latestWallpapersURLPage) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURLPage, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //Log.d("JSON", response.getJSONArray("data").toString());
+                    //Log.d("meta", response.getJSONObject("meta").toString());
+                    Gson gson = new Gson();
+
+                    List<Wallpaper> tempLatestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
+                    latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
+
+                    latestWallpapers.addAll(tempLatestWallpapers);
+
+                    //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
+                    Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
+                    //pageNumber = latestWallpapersMeta.getCurrentPage();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                setRecyclerViewAdapter(latestWallpapers);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        return request;
     }
 
 }
