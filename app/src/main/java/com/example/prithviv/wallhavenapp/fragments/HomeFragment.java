@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.TopListAdapter;
 import com.example.prithviv.wallhavenapp.models.Meta;
@@ -80,7 +81,10 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
+        //queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
+
+        queue = MySingleton.getInstance(getActivity()).
+                getRequestQueue();
 
         // Inflate the layout for this fragment
         View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
@@ -88,7 +92,7 @@ public class HomeFragment extends Fragment {
         homeRecyclerView = homeView.findViewById(R.id.my_recycler_view);
         homeRecyclerView.setHasFixedSize(true);
         // Linear layout manager
-        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        layoutManager = new LinearLayoutManager(getActivity());
         homeRecyclerView.setLayoutManager(layoutManager);
 
         // TODO: Figure out why page number won't update properly
@@ -160,7 +164,8 @@ public class HomeFragment extends Fragment {
         Log.d("URL", latestWallpapersURLPage);
         JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
 
-        queue.add(request);
+        //queue.add(request);
+        MySingleton.getInstance(getActivity()).addToRequestQueue(request);
     }
 
     public String getLatestWallpapersURLPage() {
@@ -181,10 +186,10 @@ public class HomeFragment extends Fragment {
                     latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
 
                     latestWallpapers.addAll(tempLatestWallpapers);
+                    //pageNumber = latestWallpapersMeta.getCurrentPage();
 
                     //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
                     Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
-                    //pageNumber = latestWallpapersMeta.getCurrentPage();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
