@@ -17,10 +17,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.TopListAdapter;
+import com.example.prithviv.wallhavenapp.models.GsonRequest;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.google.gson.Gson;
@@ -51,7 +53,8 @@ public class HomeFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RequestQueue queue;
     private RecyclerView homeRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    //private RecyclerView.Adapter mAdapter;
+    TopListAdapter myTopListAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<Wallpaper> latestWallpapers = new ArrayList<>();
     private Meta latestWallpapersMeta;
@@ -95,10 +98,15 @@ public class HomeFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         homeRecyclerView.setLayoutManager(layoutManager);
 
+        setRecyclerViewAdapter(latestWallpapers);
+
         // TODO: Figure out why page number won't update properly
         /*
         My guess is the time is takes to retrieve JSON, must investigate further
          */
+        getLatestWallpapers();
+        getLatestWallpapers();
+        getLatestWallpapers();
         getLatestWallpapers();
         getLatestWallpapers();
         getLatestWallpapers();
@@ -116,7 +124,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
-        TopListAdapter myTopListAdapter = new TopListAdapter(getActivity(), wallpapers);
+        myTopListAdapter = new TopListAdapter(getActivity(), wallpapers);
         homeRecyclerView.setAdapter(myTopListAdapter);
     }
 
@@ -168,7 +176,7 @@ public class HomeFragment extends Fragment {
         MySingleton.getInstance(getActivity()).addToRequestQueue(request);
     }
 
-    public String getLatestWallpapersURLPage() {
+    private String getLatestWallpapersURLPage() {
         pageNumber++;
         return latestWallpapersURL + "?page=" + pageNumber;
     }
@@ -191,11 +199,10 @@ public class HomeFragment extends Fragment {
                     //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
                     Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
 
+                    myTopListAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                setRecyclerViewAdapter(latestWallpapers);
-
             }
         }, new Response.ErrorListener() {
             @Override
