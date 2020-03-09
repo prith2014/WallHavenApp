@@ -100,16 +100,20 @@ public class HomeFragment extends Fragment {
 
         setRecyclerViewAdapter(latestWallpapers);
 
-        // TODO: Figure out why page number won't update properly
-        /*
-        My guess is the time is takes to retrieve JSON, must investigate further
-         */
+        // TODO: Implement OnScrollListener Properly
+
         getLatestWallpapers();
-        getLatestWallpapers();
-        getLatestWallpapers();
-        getLatestWallpapers();
-        getLatestWallpapers();
-        getLatestWallpapers();
+
+        homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    getLatestWallpapers();
+                }
+            }
+        });
 
         /*
         try {
