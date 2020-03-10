@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private List<Wallpaper> latestWallpapers = new ArrayList<>();
     private Meta latestWallpapersMeta;
-    private int pageNumber;
+    private int pageNumber = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment {
         return homeView;
     }
 
-    public void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
+    private void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
         myTopListAdapter = new TopListAdapter(getActivity(), wallpapers);
         homeRecyclerView.setAdapter(myTopListAdapter);
     }
@@ -172,15 +172,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void getLatestWallpapers() {
-        String latestWallpapersURLPage = getLatestWallpapersURLPage();
+        String latestWallpapersURLPage = getLatestWallpapersNextPageNumberURL();
         Log.d("URL", latestWallpapersURLPage);
         JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
 
-        //queue.add(request);
         MySingleton.getInstance(getActivity()).addToRequestQueue(request);
     }
 
-    private String getLatestWallpapersURLPage() {
+    private String getLatestWallpapersNextPageNumberURL() {
         pageNumber++;
         return latestWallpapersURL + "?page=" + pageNumber;
     }
@@ -198,7 +197,7 @@ public class HomeFragment extends Fragment {
                     latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
 
                     latestWallpapers.addAll(tempLatestWallpapers);
-                    //pageNumber = latestWallpapersMeta.getCurrentPage();
+                    pageNumber = latestWallpapersMeta.getCurrentPage();
 
                     //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
                     Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
