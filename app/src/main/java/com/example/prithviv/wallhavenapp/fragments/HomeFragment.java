@@ -138,9 +138,9 @@ public class HomeFragment extends Fragment {
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-                int fourItemsBeforeEnd = totalItemCount - 4;
+                int fiveItemsBeforeEnd = totalItemCount - 5;
 
-                if (pastVisibleItems + visibleItemCount >= fourItemsBeforeEnd) {
+                if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Four Items before end of list
                     getLatestWallpapers();
                 }
