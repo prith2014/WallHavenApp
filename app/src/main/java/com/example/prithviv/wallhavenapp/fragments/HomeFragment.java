@@ -6,23 +6,21 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.adapters.TopListAdapter;
-import com.example.prithviv.wallhavenapp.models.GsonRequest;
+import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.google.gson.Gson;
@@ -33,7 +31,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -53,12 +50,14 @@ public class HomeFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RequestQueue queue;
     private RecyclerView homeRecyclerView;
-    //private RecyclerView.Adapter mAdapter;
-    TopListAdapter myTopListAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LatestWallpapersAdapter myLatestWallpapersAdapter;
+    private LinearLayoutManager linearLayoutManager;
     private List<Wallpaper> latestWallpapers = new ArrayList<>();
     private Meta latestWallpapersMeta;
     private int pageNumber = 0;
+    private boolean wallpapersLoading;
+
+    protected Handler handler;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -84,10 +83,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()).getApplicationContext());
-
-        queue = MySingleton.getInstance(getActivity()).
-                getRequestQueue();
+        queue = MySingleton.getInstance(getActivity()).getRequestQueue();
+        handler = new Handler();
 
         // Inflate the layout for this fragment
         View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
@@ -95,25 +92,13 @@ public class HomeFragment extends Fragment {
         homeRecyclerView = homeView.findViewById(R.id.my_recycler_view);
         homeRecyclerView.setHasFixedSize(true);
         // Linear layout manager
-        layoutManager = new LinearLayoutManager(getActivity());
-        homeRecyclerView.setLayoutManager(layoutManager);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        homeRecyclerView.setLayoutManager(linearLayoutManager);
 
         setRecyclerViewAdapter(latestWallpapers);
 
-        // TODO: Implement OnScrollListener Properly
-
         getLatestWallpapers();
-
-        homeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                    getLatestWallpapers();
-                }
-            }
-        });
+        setScrollListener(homeRecyclerView);
 
         /*
         try {
@@ -128,8 +113,97 @@ public class HomeFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
-        myTopListAdapter = new TopListAdapter(getActivity(), wallpapers);
-        homeRecyclerView.setAdapter(myTopListAdapter);
+        myLatestWallpapersAdapter = new LatestWallpapersAdapter(getActivity(), wallpapers);
+        homeRecyclerView.setAdapter(myLatestWallpapersAdapter);
+    }
+
+    private void setScrollListener(RecyclerView mRecyclerView) {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /*
+            // Scrolling is not smooth when using this method
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                    getLatestWallpapers();
+                }
+            }
+            */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (wallpapersLoading)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                int fourItemsBeforeEnd = totalItemCount - 4;
+
+                if (pastVisibleItems + visibleItemCount >= fourItemsBeforeEnd) {
+                    //Four Items before end of list
+                    getLatestWallpapers();
+                }
+            }
+        });
+    }
+
+    private void getLatestWallpapers() {
+        setWallpapersLoading(true);
+        String latestWallpapersURLPage = getLatestWallpapersNextPageNumberURL();
+        Log.d("URL", latestWallpapersURLPage);
+        JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
+
+        MySingleton.getInstance(getActivity()).addToRequestQueue(request);
+    }
+
+    private String getLatestWallpapersNextPageNumberURL() {
+        pageNumber++;
+        return latestWallpapersURL + "?page=" + pageNumber;
+    }
+
+    private JsonObjectRequest getNextPageLatestWallpapers(String latestWallpapersURLPage) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURLPage, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //Log.d("JSON", response.getJSONArray("data").toString());
+                    //Log.d("meta", response.getJSONObject("meta").toString());
+
+                    Gson gson = new Gson();
+                    List<Wallpaper> tempLatestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
+                    latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
+
+                    latestWallpapers.addAll(tempLatestWallpapers);
+                    pageNumber = latestWallpapersMeta.getCurrentPage();
+
+                    //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
+                    Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            myLatestWallpapersAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    setWallpapersLoading(false);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        return request;
+    }
+
+    private void setWallpapersLoading(boolean input) {
+        wallpapersLoading = input;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -169,52 +243,6 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private void getLatestWallpapers() {
-        String latestWallpapersURLPage = getLatestWallpapersNextPageNumberURL();
-        Log.d("URL", latestWallpapersURLPage);
-        JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
-
-        MySingleton.getInstance(getActivity()).addToRequestQueue(request);
-    }
-
-    private String getLatestWallpapersNextPageNumberURL() {
-        pageNumber++;
-        return latestWallpapersURL + "?page=" + pageNumber;
-    }
-
-    private JsonObjectRequest getNextPageLatestWallpapers(String latestWallpapersURLPage) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURLPage, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //Log.d("JSON", response.getJSONArray("data").toString());
-                    //Log.d("meta", response.getJSONObject("meta").toString());
-                    Gson gson = new Gson();
-
-                    List<Wallpaper> tempLatestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-                    latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
-
-                    latestWallpapers.addAll(tempLatestWallpapers);
-                    pageNumber = latestWallpapersMeta.getCurrentPage();
-
-                    //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
-                    Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
-
-                    myTopListAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        return request;
     }
 
 }

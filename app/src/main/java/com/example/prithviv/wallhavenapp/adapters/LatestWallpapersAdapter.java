@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +20,13 @@ import java.util.List;
 import java.util.Random;
 
 
-public class TopListAdapter extends RecyclerView.Adapter<TopListAdapter.ViewHolder> {
+public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpapersAdapter.ViewHolder> {
 
     private List<Wallpaper> mData;
     private LayoutInflater mInflater;
     private AdapterView.OnItemClickListener mClickListener;
 
-    public TopListAdapter(Context context, List<Wallpaper> data) {
+    public LatestWallpapersAdapter(Context context, List<Wallpaper> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
