@@ -4,9 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.fragments.HomeFragment;
+import com.example.prithviv.wallhavenapp.fragments.LatestFragment;
 import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
-import com.facebook.drawee.backends.pipeline.Fresco;
+import com.example.prithviv.wallhavenapp.fragments.ToplistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,19 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
-        implements  HomeFragment.OnFragmentInteractionListener,
+        implements  LatestFragment.OnFragmentInteractionListener,
                     SearchFragment.OnFragmentInteractionListener {
 
     //private TextView mTextMessage;
-    final Fragment fragmentHome = new HomeFragment();
+    final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentSearch = new SearchFragment();
+    final Fragment fragmentToplist = new ToplistFragment();
     final FragmentManager fm = getSupportFragmentManager();
 
-    Fragment active = fragmentHome;
+    Fragment active = fragmentLatest;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity
             switch (item.getItemId()) {
                 case R.id.navigation_latest:
                     //mTextMessage.setText(R.string.title_home);
-                    fm.beginTransaction().hide(active).show(fragmentHome).commit();
-                    active = fragmentHome;
+                    fm.beginTransaction().hide(active).show(fragmentLatest).commit();
+                    active = fragmentLatest;
                     return true;
                 case R.id.search_dashboard:
                     //mTextMessage.setText(R.string.title_search);
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity
                     return true;
                 case R.id.navigation_toplist:
                     //mTextMessage.setText(R.string.title_notifications);
+                    fm.beginTransaction().hide(active).show(fragmentToplist).commit();
+                    active = fragmentToplist;
                     return true;
             }
             return false;
@@ -63,7 +64,8 @@ public class MainActivity extends AppCompatActivity
 
         //Fragments
         fm.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
-        fm.beginTransaction().add(R.id.main_container, fragmentHome, "fragHome").commit();
+        fm.beginTransaction().add(R.id.main_container, fragmentToplist, "fragToplist").hide(fragmentToplist).commit();
+        fm.beginTransaction().add(R.id.main_container, fragmentLatest, "fragLatest").commit();
     }
 
     @Override

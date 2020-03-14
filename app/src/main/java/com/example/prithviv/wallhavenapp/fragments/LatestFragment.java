@@ -36,12 +36,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
+ * {@link LatestFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link LatestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class LatestFragment extends Fragment {
     // Top List URL does not give the uploaders or tags of each wallpaper
     private static final String latestWallpapersURL = "https://wallhaven.cc/api/v1/search";
     // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private RequestQueue queue;
-    private RecyclerView homeRecyclerView;
+    private RecyclerView latestRecyclerView;
     private LatestWallpapersAdapter myLatestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<Wallpaper> latestWallpapers = new ArrayList<>();
@@ -59,13 +59,13 @@ public class HomeFragment extends Fragment {
 
     protected Handler handler;
 
-    public HomeFragment() {
+    public LatestFragment() {
         // Required empty public constructor
     }
 
 
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static LatestFragment newInstance(String param1, String param2) {
+        LatestFragment fragment = new LatestFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -87,18 +87,18 @@ public class HomeFragment extends Fragment {
         handler = new Handler();
 
         // Inflate the layout for this fragment
-        View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
+        View latestView =  inflater.inflate(R.layout.fragment_latest, container, false);
         // RecyclerView
-        homeRecyclerView = homeView.findViewById(R.id.my_recycler_view);
-        homeRecyclerView.setHasFixedSize(true);
+        latestRecyclerView = latestView.findViewById(R.id.my_recycler_view);
+        latestRecyclerView.setHasFixedSize(true);
         // Linear layout manager
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        homeRecyclerView.setLayoutManager(linearLayoutManager);
+        latestRecyclerView.setLayoutManager(linearLayoutManager);
 
         setRecyclerViewAdapter(latestWallpapers);
 
         getLatestWallpapers();
-        setScrollListener(homeRecyclerView);
+        setScrollListener(latestRecyclerView);
 
         /*
         try {
@@ -109,12 +109,12 @@ public class HomeFragment extends Fragment {
         }
         */
 
-        return homeView;
+        return latestView;
     }
 
     private void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
         myLatestWallpapersAdapter = new LatestWallpapersAdapter(getActivity(), wallpapers);
-        homeRecyclerView.setAdapter(myLatestWallpapersAdapter);
+        latestRecyclerView.setAdapter(myLatestWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {

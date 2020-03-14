@@ -66,7 +66,7 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
             super(itemView);
             mSimpleDraweeView = itemView.findViewById(R.id.my_image_view);
             mSimpleDraweeView.getHierarchy().setPlaceholderImage(new ColorDrawable(sRandom.nextInt()));
-            //itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
