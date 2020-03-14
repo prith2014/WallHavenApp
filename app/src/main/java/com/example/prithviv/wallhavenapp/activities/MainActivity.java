@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_latest:
                     //mTextMessage.setText(R.string.title_home);
                     fm.beginTransaction().hide(active).show(fragmentHome).commit();
                     active = fragmentHome;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
                     fm.beginTransaction().hide(active).show(fragmentSearch).commit();
                     active = fragmentSearch;
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_toplist:
                     //mTextMessage.setText(R.string.title_notifications);
                     return true;
             }
