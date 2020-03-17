@@ -93,6 +93,7 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
             Wallpaper selectedWallpaper = mData.get(getAdapterPosition());
             Log.d("Selected Wallpaper", selectedWallpaper.getURL());
 
+            // TODO: Implement Selected Wallpaper Fragment
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
             //FragmentManager fragmentManager = getFragmentManager();
 
