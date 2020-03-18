@@ -2,8 +2,10 @@ package com.example.prithviv.wallhavenapp.adapters;
 
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.ColorDrawable;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.SelectedWallpaperFragment;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
@@ -31,10 +34,12 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
     private List<Wallpaper> mData;
     private LayoutInflater mInflater;
     //private View.OnClickListener mClickListener;
+    private final ContextProvider mContextProvider;
 
-    public LatestWallpapersAdapter(Context context, List<Wallpaper> data) {
-        this.mInflater = LayoutInflater.from(context);
+    public LatestWallpapersAdapter(ContextProvider contextProvider, List<Wallpaper> data) {
         this.mData = data;
+        this.mContextProvider = contextProvider;
+        this.mInflater = LayoutInflater.from(mContextProvider.getContext());
     }
 
     // Inflates row layout from xml when needed
@@ -92,10 +97,16 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
             Log.d(TAG, "position = " + this.getAdapterPosition());
             Wallpaper selectedWallpaper = mData.get(getAdapterPosition());
             Log.d("Selected Wallpaper", selectedWallpaper.getURL());
+            Context context = mContextProvider.getContext();
 
-            // TODO: Implement Selected Wallpaper Fragment
+            // TODO: Pass Wallpaper instance to Selected Wallpaper Fragment
+            // Must create callback interface
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
-            //FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.main_container, selectedWallpaperFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
 
         }
     }

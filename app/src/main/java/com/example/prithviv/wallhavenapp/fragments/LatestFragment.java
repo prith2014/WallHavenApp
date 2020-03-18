@@ -18,6 +18,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
@@ -113,7 +114,13 @@ public class LatestFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
-        myLatestWallpapersAdapter = new LatestWallpapersAdapter(getActivity(), wallpapers);
+        myLatestWallpapersAdapter = new LatestWallpapersAdapter(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+                //return MyActivity.this;       // For activities
+            }
+        }, wallpapers);
         latestRecyclerView.setAdapter(myLatestWallpapersAdapter);
     }
 
