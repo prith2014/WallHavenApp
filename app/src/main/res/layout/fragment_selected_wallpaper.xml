@@ -7,34 +7,15 @@
     tools:context=".fragments.SelectedWallpaperFragment">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_wallpaper_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         card_view:cardCornerRadius="4dp"
-        card_view:layout_constraintBottom_toTopOf="@id/card_wallpaper_info"
         card_view:layout_constraintTop_toTopOf="parent" >
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/my_image_view"
+            android:id="@+id/selected_wallpaper_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_wallpaper_info"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        card_view:cardCornerRadius="4dp"
-        card_view:layout_constraintBottom_toBottomOf="parent"
-        card_view:layout_constraintTop_toBottomOf="@id/card_wallpaper_view"
-        tools:layout_editor_absoluteX="0dp" >
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/selected_wallpaper_fragment" />
-    </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

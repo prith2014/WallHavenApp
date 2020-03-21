@@ -75,17 +75,14 @@ public class LatestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
-
+        queue = MySingleton.getInstance(getActivity()).getRequestQueue();
+        handler = new Handler();
+        getLatestWallpapers();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        queue = MySingleton.getInstance(getActivity()).getRequestQueue();
-        handler = new Handler();
 
         // Inflate the layout for this fragment
         View latestView =  inflater.inflate(R.layout.fragment_latest, container, false);
@@ -98,17 +95,7 @@ public class LatestFragment extends Fragment {
 
         setRecyclerViewAdapter(latestWallpapers);
 
-        getLatestWallpapers();
         setScrollListener(latestRecyclerView);
-
-        /*
-        try {
-            //set time in mili
-            Thread.sleep(5000);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        */
 
         return latestView;
     }
@@ -151,7 +138,7 @@ public class LatestFragment extends Fragment {
         Log.d("URL", latestWallpapersURLPage);
         JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
 
-        MySingleton.getInstance(getActivity()).addToRequestQueue(request);
+        queue.add(request);
     }
 
     private String getLatestWallpapersNextPageNumberURL() {

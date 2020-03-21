@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +25,6 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.List;
 import java.util.Random;
-
-import static android.content.ContentValues.TAG;
 
 
 public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpapersAdapter.ViewHolder> {
@@ -86,14 +84,19 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
         @Override
         public void onClick(View view) {
 
-            Log.d(TAG, "position = " + this.getAdapterPosition());
+            //Log.d(TAG, "position = " + this.getAdapterPosition());
             Wallpaper selectedWallpaper = mData.get(getAdapterPosition());
-            Log.d("Selected Wallpaper", selectedWallpaper.getURL());
+            //Log.d("Selected Wallpaper", selectedWallpaper.getURL());
             Context context = mContextProvider.getContext();
 
             // TODO: Pass Wallpaper instance to Selected Wallpaper Fragment
             // Must create callback interface
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
+            Bundle args = new Bundle();
+            args.putInt(SelectedWallpaperFragment.ARG_POSITION, getAdapterPosition());
+            args.putString(SelectedWallpaperFragment.ARG_ID, selectedWallpaper.getID());
+            selectedWallpaperFragment.setArguments(args);
+
             FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.main_container, selectedWallpaperFragment);
