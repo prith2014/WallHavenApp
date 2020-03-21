@@ -126,17 +126,7 @@ public class LatestFragment extends Fragment {
 
     private void setScrollListener(RecyclerView mRecyclerView) {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            /*
-            // Scrolling is not smooth when using this method
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
 
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                    getLatestWallpapers();
-                }
-            }
-            */
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (wallpapersLoading)

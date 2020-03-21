@@ -33,7 +33,6 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
 
     private List<Wallpaper> mData;
     private LayoutInflater mInflater;
-    //private View.OnClickListener mClickListener;
     private final ContextProvider mContextProvider;
 
     public LatestWallpapersAdapter(ContextProvider contextProvider, List<Wallpaper> data) {
@@ -86,13 +85,6 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
 
         @Override
         public void onClick(View view) {
-            /*
-            if (mClickListener != null) {
-                Log.d(TAG, "position = " + this.getAdapterPosition());
-                //mClickListener.onItemClick(view, this.getAdapterPosition());
-
-            }
-            */
 
             Log.d(TAG, "position = " + this.getAdapterPosition());
             Wallpaper selectedWallpaper = mData.get(getAdapterPosition());

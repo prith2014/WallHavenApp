@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity
         implements  LatestFragment.OnFragmentInteractionListener,
                     SearchFragment.OnFragmentInteractionListener {
 
-    //private TextView mTextMessage;
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentSearch = new SearchFragment();
     final Fragment fragmentToplist = new ToplistFragment();
@@ -34,17 +33,14 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_latest:
-                    //mTextMessage.setText(R.string.title_home);
                     fm.beginTransaction().hide(active).show(fragmentLatest).commit();
                     active = fragmentLatest;
                     return true;
                 case R.id.search_dashboard:
-                    //mTextMessage.setText(R.string.title_search);
                     fm.beginTransaction().hide(active).show(fragmentSearch).commit();
                     active = fragmentSearch;
                     return true;
                 case R.id.navigation_toplist:
-                    //mTextMessage.setText(R.string.title_notifications);
                     fm.beginTransaction().hide(active).show(fragmentToplist).commit();
                     active = fragmentToplist;
                     return true;
@@ -59,7 +55,6 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        //mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Fragments
