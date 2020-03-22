@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,8 +11,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/selected_wallpaper_view"
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         fresco:actualImageScaleType="fitCenter"
         card_view:layout_constraintBottom_toTopOf="@id/card_view_info"
         card_view:layout_constraintTop_toTopOf="parent"
@@ -21,12 +22,21 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_info"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="100dp"
+        app:elevation="0dp"
         card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintTop_toBottomOf="@id/selected_wallpaper_view"
         card_view:layout_constraintLeft_toLeftOf="parent"
         card_view:layout_constraintRight_toRightOf="parent"
-        />
+
+        >
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/stat_sys_download" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
