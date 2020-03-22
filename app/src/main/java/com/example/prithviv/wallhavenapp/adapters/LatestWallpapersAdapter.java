@@ -89,8 +89,10 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
             //Log.d("Selected Wallpaper", selectedWallpaper.getURL());
             Context context = mContextProvider.getContext();
 
-            // TODO: Pass Wallpaper instance to Selected Wallpaper Fragment
-            // Must create callback interface
+            launchSelectedWallpaperFragment(selectedWallpaper, context);
+        }
+
+        private void launchSelectedWallpaperFragment(Wallpaper selectedWallpaper, Context context) {
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
             Bundle args = new Bundle();
             args.putInt(SelectedWallpaperFragment.ARG_POSITION, getAdapterPosition());
@@ -102,7 +104,6 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
             fragmentTransaction.replace(R.id.main_container, selectedWallpaperFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
         }
     }
 }
