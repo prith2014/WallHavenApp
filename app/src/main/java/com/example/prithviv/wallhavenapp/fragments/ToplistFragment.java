@@ -3,33 +3,12 @@ package com.example.prithviv.wallhavenapp.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
-import com.example.prithviv.wallhavenapp.models.Meta;
-import com.example.prithviv.wallhavenapp.models.Wallpaper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.

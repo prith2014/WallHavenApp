@@ -16,7 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.prithviv.wallhavenapp.MySingleton;
+import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -26,6 +26,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -82,7 +84,7 @@ public class SelectedWallpaperFragment extends Fragment {
         }
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
-        queue = MySingleton.getInstance(getActivity()).getRequestQueue();
+        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
         getWallpaperData();
     }
 

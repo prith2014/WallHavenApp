@@ -18,8 +18,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.ContextProvider;
-import com.example.prithviv.wallhavenapp.MySingleton;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Meta;
@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -53,7 +54,7 @@ public class LatestFragment extends Fragment {
     private RecyclerView latestRecyclerView;
     private LatestWallpapersAdapter myLatestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private List<Wallpaper> latestWallpapers = new ArrayList<>();
+    private List<Wallpaper> latestWallpapers;
     private Meta latestWallpapersMeta;
     private int pageNumber = 0;
     private boolean wallpapersLoading;
@@ -75,7 +76,8 @@ public class LatestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        queue = MySingleton.getInstance(getActivity()).getRequestQueue();
+        latestWallpapers = new ArrayList<>();
+        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
         handler = new Handler();
         getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
     }
