@@ -29,7 +29,6 @@
         card_view:layout_constraintTop_toBottomOf="@id/selected_wallpaper_view"
         card_view:layout_constraintLeft_toLeftOf="parent"
         card_view:layout_constraintRight_toRightOf="parent"
-
         >
 
         <ImageButton

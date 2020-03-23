@@ -77,7 +77,7 @@ public class LatestFragment extends Fragment {
         super.onCreate(savedInstanceState);
         queue = MySingleton.getInstance(getActivity()).getRequestQueue();
         handler = new Handler();
-        getLatestWallpapers();
+        getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
     }
 
     @Override
@@ -126,31 +126,30 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getLatestWallpapers();
+                    getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
                 }
             }
         });
     }
 
-    private void getLatestWallpapers() {
+    private void getLatestWallpapers(String getRequestURL) {
         setWallpapersLoading(true);
-        String latestWallpapersURLPage = getLatestWallpapersNextPageNumberURL();
-        //Log.d("URL", latestWallpapersURLPage);
+        String latestWallpapersURLPage = getNextPageNumberURL(getRequestURL);
         JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
 
         queue.add(request);
     }
 
-    private String getLatestWallpapersNextPageNumberURL() {
+    private String getNextPageNumberURL(String getRequestURL) {
         pageNumber++;
-        return LATEST_WALLPAPER_GET_REQUEST_URL + "?page=" + pageNumber;
+        return getRequestURL + "?page=" + pageNumber;
     }
 
     private JsonObjectRequest getNextPageLatestWallpapers(String latestWallpapersURLPage) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURLPage, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                parseWallpapersJSON(response);
+                parseWallpapersListJSON(response, latestWallpapers, latestWallpapersMeta);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -166,20 +165,20 @@ public class LatestFragment extends Fragment {
         wallpapersLoading = input;
     }
 
-    private void parseWallpapersJSON(JSONObject response) {
+    private void parseWallpapersListJSON(JSONObject response, List<Wallpaper> wallpapers, Meta meta) {
         try {
             //Log.d("JSON", response.getJSONArray("data").toString());
             //Log.d("meta", response.getJSONObject("meta").toString());
 
             Gson gson = new Gson();
             List<Wallpaper> tempLatestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-            latestWallpapersMeta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
+            meta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
 
-            latestWallpapers.addAll(tempLatestWallpapers);
-            pageNumber = latestWallpapersMeta.getCurrentPage();
+            wallpapers.addAll(tempLatestWallpapers);
+            pageNumber = meta.getCurrentPage();
 
             //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
-            Log.d("meta", Integer.toString(latestWallpapersMeta.getCurrentPage()));
+            Log.d("meta", Integer.toString(meta.getCurrentPage()));
 
             handler.post(new Runnable() {
                 @Override
