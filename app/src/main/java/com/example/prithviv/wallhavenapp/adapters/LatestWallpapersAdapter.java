@@ -20,7 +20,6 @@ import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.SelectedWallpaperFragment;
 import com.example.prithviv.wallhavenapp.models.Data;
-import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;

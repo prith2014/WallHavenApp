@@ -19,7 +19,7 @@ import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
-import com.example.prithviv.wallhavenapp.models.Wallpaper;
+import com.example.prithviv.wallhavenapp.models.WallpaperList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class LatestFragment extends Fragment {
     private RecyclerView latestRecyclerView;
     private LatestWallpapersAdapter myLatestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private Wallpaper latestWallpaper;
+    private WallpaperList latestWallpaperList;
     private Meta latestWallpapersMeta;
     private List<Data> latestWallpapersList;
     private int pageNumber = 0;
@@ -143,18 +143,18 @@ public class LatestFragment extends Fragment {
 
     private void getLatestWallpapers() {
         setWallpapersLoading(true);
-        Call<Wallpaper> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
+        Call<WallpaperList> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
 
-        retroCall.enqueue(new Callback<Wallpaper>() {
+        retroCall.enqueue(new Callback<WallpaperList>() {
             @Override
-            public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
+            public void onResponse(Call<WallpaperList> call, retrofit2.Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     //Log.d("JSON", response.toString());
-                    Wallpaper wallpaper = response.body();
-                    assert wallpaper != null;
+                    WallpaperList wallpaperList = response.body();
+                    assert wallpaperList != null;
                     //Log.d("JSON", wallpaper.getData().get(0).getUrl());
-                    latestWallpapersList.addAll(wallpaper.getData());
-                    latestWallpapersMeta = wallpaper.getMeta();
+                    latestWallpapersList.addAll(wallpaperList.getData());
+                    latestWallpapersMeta = wallpaperList.getMeta();
                     //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
                     handler.post(new Runnable() {
@@ -168,7 +168,7 @@ public class LatestFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Wallpaper> call, Throwable t) {
+            public void onFailure(Call<WallpaperList> call, Throwable t) {
                 Log.d("Error", t.getMessage());
             }
         });

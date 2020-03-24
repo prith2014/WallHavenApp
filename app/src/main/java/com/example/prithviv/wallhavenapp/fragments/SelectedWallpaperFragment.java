@@ -12,15 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
+import com.example.prithviv.wallhavenapp.models.WallpaperList;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -28,8 +27,6 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +52,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
     private int selectedWallpaperPosition;
     private String selectedWallpaperID;
-    private Wallpaper selectedWallpaper;
+    private WallpaperList selectedWallpaperList;
     private SimpleDraweeView mSimpleDraweeView;
     private Handler handler;
     private Boolean wallpaperLoading;
@@ -122,22 +119,22 @@ public class SelectedWallpaperFragment extends Fragment {
         setWallpaperLoading(true);
         //queue.add(getWallpaperRequest(createWallpaperGetRequest(selectedWallpaperID)));
 
-        Call<Data> retroCall = wallhavenService.getWallpaper(selectedWallpaperID);
+        Call<Wallpaper> retroCall = wallhavenService.getWallpaper(selectedWallpaperID);
 
-        retroCall.enqueue(new Callback<Data>() {
+        retroCall.enqueue(new Callback<Wallpaper>() {
             @Override
-            public void onResponse(Call<Data> call, retrofit2.Response<Data> response) {
+            public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
-                    Data data = response.body();
-                    assert data != null;
-                    Log.d(TAG, data.getUrl());
+                    assert response.body() != null;
+                    Data data = response.body().getData();
+                    setImageView(data);
                 }
             }
 
             @Override
-            public void onFailure(Call<Data> call, Throwable t) {
-                Log.d("Error", t.getMessage());
+            public void onFailure(Call<Wallpaper> call, Throwable t) {
+
             }
         });
     }
@@ -154,7 +151,7 @@ public class SelectedWallpaperFragment extends Fragment {
                     Gson gson = new Gson();
                     //Log.d("JSON", response.getJSONObject("data").toString());
 
-                    selectedWallpaper = gson.fromJson(response.getJSONObject("data").toString(), Wallpaper.class);
+                    selectedWallpaperList = gson.fromJson(response.getJSONObject("data").toString(), WallpaperList.class);
                     //Log.d(TAG, selectedWallpaper.getPath());
 
                     //setImageView(selectedWallpaper);
@@ -181,11 +178,11 @@ public class SelectedWallpaperFragment extends Fragment {
     private void setImageView(Data wallpaper) {
         String pathURL = wallpaper.getPath();
         Log.d(TAG, pathURL);
-        /*
+
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
-        */
+
     }
 }
