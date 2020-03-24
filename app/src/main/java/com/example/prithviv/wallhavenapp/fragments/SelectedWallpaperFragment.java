@@ -134,7 +134,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Wallpaper> call, Throwable t) {
-
+                Log.d("Error", t.getMessage());
             }
         });
     }
