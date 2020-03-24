@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.SelectedWallpaperFragment;
+import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -26,14 +28,16 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import java.util.List;
 import java.util.Random;
 
+import static android.content.ContentValues.TAG;
+
 
 public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpapersAdapter.ViewHolder> {
 
-    private List<Wallpaper> mData;
+    private List<Data> mData;
     private LayoutInflater mInflater;
     private final ContextProvider mContextProvider;
 
-    public LatestWallpapersAdapter(ContextProvider contextProvider, List<Wallpaper> data) {
+    public LatestWallpapersAdapter(ContextProvider contextProvider, List<Data> data) {
         this.mData = data;
         this.mContextProvider = contextProvider;
         this.mInflater = LayoutInflater.from(mContextProvider.getContext());
@@ -52,7 +56,8 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
     // Binds the data to the SimpleDraweeView in each row
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String urlThumbOriginal = mData.get(position).getThumbsOriginal();
+        String urlThumbOriginal = mData.get(position).getThumbs().getOriginal();
+        Log.d(TAG, urlThumbOriginal);
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
                         .build();
@@ -84,19 +89,19 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
         @Override
         public void onClick(View view) {
 
-            //Log.d(TAG, "position = " + this.getAdapterPosition());
-            Wallpaper selectedWallpaper = mData.get(getAdapterPosition());
-            //Log.d("Selected Wallpaper", selectedWallpaper.getURL());
+            Log.d(TAG, "position = " + this.getAdapterPosition());
+            Data selectedWallpaper = mData.get(getAdapterPosition());
+            Log.d("Selected Wallpaper", selectedWallpaper.getUrl());
             Context context = mContextProvider.getContext();
 
             launchSelectedWallpaperFragment(selectedWallpaper, context);
         }
 
-        private void launchSelectedWallpaperFragment(Wallpaper selectedWallpaper, Context context) {
+        private void launchSelectedWallpaperFragment(Data selectedWallpaper, Context context) {
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
             Bundle args = new Bundle();
             args.putInt(SelectedWallpaperFragment.ARG_POSITION, getAdapterPosition());
-            args.putString(SelectedWallpaperFragment.ARG_ID, selectedWallpaper.getID());
+            args.putString(SelectedWallpaperFragment.ARG_ID, selectedWallpaper.getId());
             selectedWallpaperFragment.setArguments(args);
 
             FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();

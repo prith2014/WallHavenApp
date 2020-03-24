@@ -1,29 +1,75 @@
 package com.example.prithviv.wallhavenapp.models;
 
-public class Meta {
-    private int current_page;
-    private int last_page;
-    private int per_page;
-    private int total;
-    private String query;
-    private String seed;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    Meta(int current_page, int last_page, int per_page, int total, String query, String seed) {
-        this.current_page = current_page;
-        this.last_page = last_page;
-        this.per_page = per_page;
+public class Meta {
+
+    @SerializedName("current_page")
+    @Expose
+    private Integer currentPage;
+    @SerializedName("last_page")
+    @Expose
+    private Integer lastPage;
+    @SerializedName("per_page")
+    @Expose
+    private Integer perPage;
+    @SerializedName("total")
+    @Expose
+    private Integer total;
+    @SerializedName("query")
+    @Expose
+    private Object query;
+    @SerializedName("seed")
+    @Expose
+    private Object seed;
+
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public Integer getLastPage() {
+        return lastPage;
+    }
+
+    public void setLastPage(Integer lastPage) {
+        this.lastPage = lastPage;
+    }
+
+    public Integer getPerPage() {
+        return perPage;
+    }
+
+    public void setPerPage(Integer perPage) {
+        this.perPage = perPage;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public Object getQuery() {
+        return query;
+    }
+
+    public void setQuery(Object query) {
         this.query = query;
+    }
+
+    public Object getSeed() {
+        return seed;
+    }
+
+    public void setSeed(Object seed) {
         this.seed = seed;
     }
 
-    public int getCurrentPage() { return current_page; }
-
-    public int getLastPage() { return last_page; }
-
-    public int getPerPage() { return per_page; }
-
-    public String getQuery() { return query; }
-
-    public String getSeed() { return seed; }
 }

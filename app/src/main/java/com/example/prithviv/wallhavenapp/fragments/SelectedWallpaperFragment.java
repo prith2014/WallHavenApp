@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -119,7 +120,7 @@ public class SelectedWallpaperFragment extends Fragment {
                     selectedWallpaper = gson.fromJson(response.getJSONObject("data").toString(), Wallpaper.class);
                     //Log.d(TAG, selectedWallpaper.getPath());
 
-                    setImageView(selectedWallpaper);
+                    //setImageView(selectedWallpaper);
 
                     setWallpaperLoading(false);
                 } catch (JSONException e) {
@@ -140,8 +141,8 @@ public class SelectedWallpaperFragment extends Fragment {
         wallpaperLoading = input;
     }
 
-    private void setImageView(Wallpaper wallpaper) {
-        String pathURL = selectedWallpaper.getPath();
+    private void setImageView(Data wallpaper) {
+        String pathURL = wallpaper.getPath();
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
                         .build();

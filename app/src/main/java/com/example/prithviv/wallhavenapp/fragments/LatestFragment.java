@@ -20,8 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.ContextProvider;
+import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
+import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.google.gson.Gson;
@@ -30,9 +32,15 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -45,21 +53,23 @@ import java.util.Objects;
  */
 public class LatestFragment extends Fragment {
     // Top List URL does not give the uploaders or tags of each wallpaper
+    private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
     private static final String LATEST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search";
     // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
     private static final String TOPLIST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search?toplist";
 
     private OnFragmentInteractionListener mListener;
-    private RequestQueue queue;
     private RecyclerView latestRecyclerView;
     private LatestWallpapersAdapter myLatestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private List<Wallpaper> latestWallpapers;
+    private Wallpaper latestWallpaper;
     private Meta latestWallpapersMeta;
+    private List<Data> latestWallpapersList;
     private int pageNumber = 0;
     private boolean wallpapersLoading;
-
     private Handler handler;
+    private Retrofit retrofit;
+    private WallhavenAPI wallhavenService;
 
     public LatestFragment() {
         // Required empty public constructor
@@ -76,10 +86,16 @@ public class LatestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        latestWallpapers = new ArrayList<>();
-        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
-        handler = new Handler();
-        getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
+        latestWallpapersList = new ArrayList<>();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WALLHAVEN_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        wallhavenService = retrofit.create(WallhavenAPI.class);
+
+        getLatestWallpapers();
     }
 
     @Override
@@ -95,13 +111,14 @@ public class LatestFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         latestRecyclerView.setLayoutManager(linearLayoutManager);
 
-        setRecyclerViewAdapter(latestWallpapers);
+        setRecyclerViewAdapter(latestWallpapersList);
         setScrollListener(latestRecyclerView);
 
         return latestView;
     }
 
-    private void setRecyclerViewAdapter(List<Wallpaper> wallpapers) {
+    private void setRecyclerViewAdapter(List<Data> wallpapers) {
+
         myLatestWallpapersAdapter = new LatestWallpapersAdapter(new ContextProvider() {
             @Override
             public Context getContext() {
@@ -109,6 +126,7 @@ public class LatestFragment extends Fragment {
                 //return MyActivity.this;       // For activities
             }
         }, wallpapers);
+
 
         latestRecyclerView.setAdapter(myLatestWallpapersAdapter);
     }
@@ -128,18 +146,39 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
+                    //getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
+
                 }
             }
         });
     }
 
-    private void getLatestWallpapers(String getRequestURL) {
-        setWallpapersLoading(true);
-        String latestWallpapersURLPage = getNextPageNumberURL(getRequestURL);
-        JsonObjectRequest request = getNextPageLatestWallpapers(latestWallpapersURLPage);
+    private void getLatestWallpapers() {
+        Call<Wallpaper> retroCall = wallhavenService.listLatestWallpapers();
 
-        queue.add(request);
+        retroCall.enqueue(new Callback<Wallpaper>() {
+            @Override
+            public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
+                Log.d("JSON", response.toString());
+                Wallpaper wallpaper = response.body();
+                Log.d("JSON", wallpaper.getData().get(0).getUrl());
+                latestWallpapersList.addAll(wallpaper.getData());
+                latestWallpapersMeta = wallpaper.getMeta();
+                Log.d("JSON", latestWallpapersList.get(0).getUrl());
+            }
+
+            @Override
+            public void onFailure(Call<Wallpaper> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+
+        /*
+        Wallpaper wallpaper = retroCall.execute().body();
+        latestWallpapersList.addAll(wallpaper.getData());
+        latestWallpapersMeta = wallpaper.getMeta();
+        */
+
     }
 
     private String getNextPageNumberURL(String getRequestURL) {
@@ -147,52 +186,8 @@ public class LatestFragment extends Fragment {
         return getRequestURL + "?page=" + pageNumber;
     }
 
-    private JsonObjectRequest getNextPageLatestWallpapers(String latestWallpapersURLPage) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, latestWallpapersURLPage, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                parseWallpapersListJSON(response, latestWallpapers, latestWallpapersMeta);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        return request;
-    }
-
     private void setWallpapersLoading(boolean input) {
         wallpapersLoading = input;
-    }
-
-    private void parseWallpapersListJSON(JSONObject response, List<Wallpaper> wallpapers, Meta meta) {
-        try {
-            //Log.d("JSON", response.getJSONArray("data").toString());
-            //Log.d("meta", response.getJSONObject("meta").toString());
-
-            Gson gson = new Gson();
-            List<Wallpaper> tempLatestWallpapers = gson.fromJson(response.getJSONArray("data").toString(), new TypeToken<List<Wallpaper>>(){}.getType() );
-            meta = gson.fromJson(response.getJSONObject("meta").toString(), Meta.class);
-
-            wallpapers.addAll(tempLatestWallpapers);
-            pageNumber = meta.getCurrentPage();
-
-            //Log.d("URL", latestWallpapers.get(1).getThumbsOriginal());
-            Log.d("meta", Integer.toString(meta.getCurrentPage()));
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    myLatestWallpapersAdapter.notifyDataSetChanged();
-                }
-            });
-            setWallpapersLoading(false);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
