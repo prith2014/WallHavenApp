@@ -134,7 +134,6 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    //getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
                     getLatestWallpapers();
                 }
             }

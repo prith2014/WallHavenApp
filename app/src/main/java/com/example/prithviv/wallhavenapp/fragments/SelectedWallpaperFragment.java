@@ -52,14 +52,10 @@ public class SelectedWallpaperFragment extends Fragment {
 
     private int selectedWallpaperPosition;
     private String selectedWallpaperID;
-    private WallpaperList selectedWallpaperList;
     private SimpleDraweeView mSimpleDraweeView;
-    private Handler handler;
     private Boolean wallpaperLoading;
-    //private RequestQueue queue;
     private Retrofit retrofit;
     private WallhavenAPI wallhavenService;
-    private Data wallpaperData;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -92,7 +88,6 @@ public class SelectedWallpaperFragment extends Fragment {
         }
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
-        //queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(WALLHAVEN_API_URL)
@@ -117,7 +112,6 @@ public class SelectedWallpaperFragment extends Fragment {
 
     private void getWallpaperData() {
         setWallpaperLoading(true);
-        //queue.add(getWallpaperRequest(createWallpaperGetRequest(selectedWallpaperID)));
 
         Call<Wallpaper> retroCall = wallhavenService.getWallpaper(selectedWallpaperID);
 
@@ -139,45 +133,12 @@ public class SelectedWallpaperFragment extends Fragment {
         });
     }
 
-    private String createWallpaperGetRequest(String id) {
-        return WALLHAVEN_GET_REQUEST + id;
-    }
-
-    private JsonObjectRequest getWallpaperRequest(String URL) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Gson gson = new Gson();
-                    //Log.d("JSON", response.getJSONObject("data").toString());
-
-                    selectedWallpaperList = gson.fromJson(response.getJSONObject("data").toString(), WallpaperList.class);
-                    //Log.d(TAG, selectedWallpaper.getPath());
-
-                    //setImageView(selectedWallpaper);
-
-                    setWallpaperLoading(false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-        return request;
-    }
-
     private void setWallpaperLoading(boolean input) {
         wallpaperLoading = input;
     }
 
     private void setImageView(Data wallpaper) {
         String pathURL = wallpaper.getPath();
-        Log.d(TAG, pathURL);
 
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
