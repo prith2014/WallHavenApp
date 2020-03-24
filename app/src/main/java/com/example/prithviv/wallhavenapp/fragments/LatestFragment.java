@@ -148,21 +148,23 @@ public class LatestFragment extends Fragment {
         retroCall.enqueue(new Callback<Wallpaper>() {
             @Override
             public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
-                //Log.d("JSON", response.toString());
-                Wallpaper wallpaper = response.body();
-                assert wallpaper != null;
-                //Log.d("JSON", wallpaper.getData().get(0).getUrl());
-                latestWallpapersList.addAll(wallpaper.getData());
-                latestWallpapersMeta = wallpaper.getMeta();
-                //Log.d("JSON", latestWallpapersList.get(0).getUrl());
+                if (response.isSuccessful()) {
+                    //Log.d("JSON", response.toString());
+                    Wallpaper wallpaper = response.body();
+                    assert wallpaper != null;
+                    //Log.d("JSON", wallpaper.getData().get(0).getUrl());
+                    latestWallpapersList.addAll(wallpaper.getData());
+                    latestWallpapersMeta = wallpaper.getMeta();
+                    //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        myLatestWallpapersAdapter.notifyDataSetChanged();
-                    }
-                });
-                setWallpapersLoading(false);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            myLatestWallpapersAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    setWallpapersLoading(false);
+                }
             }
 
             @Override

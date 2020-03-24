@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
@@ -30,6 +31,11 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -41,6 +47,7 @@ public class SelectedWallpaperFragment extends Fragment {
     public static final String ARG_POSITION = "position";
     public static final String ARG_ID = "ID";
     private static final String WALLHAVEN_GET_REQUEST = "https://wallhaven.cc/api/v1/w/";
+    private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -52,7 +59,10 @@ public class SelectedWallpaperFragment extends Fragment {
     private SimpleDraweeView mSimpleDraweeView;
     private Handler handler;
     private Boolean wallpaperLoading;
-    private RequestQueue queue;
+    //private RequestQueue queue;
+    private Retrofit retrofit;
+    private WallhavenAPI wallhavenService;
+    private Data wallpaperData;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -85,7 +95,15 @@ public class SelectedWallpaperFragment extends Fragment {
         }
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
-        queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
+        //queue = Volley.newRequestQueue(Objects.requireNonNull(getActivity()));
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(WALLHAVEN_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        wallhavenService = retrofit.create(WallhavenAPI.class);
+
         getWallpaperData();
     }
 
@@ -102,7 +120,26 @@ public class SelectedWallpaperFragment extends Fragment {
 
     private void getWallpaperData() {
         setWallpaperLoading(true);
-        queue.add(getWallpaperRequest(createWallpaperGetRequest(selectedWallpaperID)));
+        //queue.add(getWallpaperRequest(createWallpaperGetRequest(selectedWallpaperID)));
+
+        Call<Data> retroCall = wallhavenService.getWallpaper(selectedWallpaperID);
+
+        retroCall.enqueue(new Callback<Data>() {
+            @Override
+            public void onResponse(Call<Data> call, retrofit2.Response<Data> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    Data data = response.body();
+                    assert data != null;
+                    Log.d(TAG, data.getUrl());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Data> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
     }
 
     private String createWallpaperGetRequest(String id) {
@@ -143,9 +180,12 @@ public class SelectedWallpaperFragment extends Fragment {
 
     private void setImageView(Data wallpaper) {
         String pathURL = wallpaper.getPath();
+        Log.d(TAG, pathURL);
+        /*
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
+        */
     }
 }
