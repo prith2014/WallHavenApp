@@ -87,6 +87,7 @@ public class LatestFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         latestWallpapersList = new ArrayList<>();
+        handler = new Handler();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(WALLHAVEN_API_URL)
@@ -142,12 +143,12 @@ public class LatestFragment extends Fragment {
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-                int fiveItemsBeforeEnd = totalItemCount - 5;
+                int tenItemsBeforeEnd = totalItemCount - 10;
 
-                if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
+                if (pastVisibleItems + visibleItemCount >= tenItemsBeforeEnd) {
                     //Five Items before end of list
                     //getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
-
+                    getLatestWallpapers();
                 }
             }
         });
@@ -159,12 +160,20 @@ public class LatestFragment extends Fragment {
         retroCall.enqueue(new Callback<Wallpaper>() {
             @Override
             public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
-                Log.d("JSON", response.toString());
+                //Log.d("JSON", response.toString());
                 Wallpaper wallpaper = response.body();
-                Log.d("JSON", wallpaper.getData().get(0).getUrl());
+                assert wallpaper != null;
+                //Log.d("JSON", wallpaper.getData().get(0).getUrl());
                 latestWallpapersList.addAll(wallpaper.getData());
                 latestWallpapersMeta = wallpaper.getMeta();
                 Log.d("JSON", latestWallpapersList.get(0).getUrl());
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        myLatestWallpapersAdapter.notifyDataSetChanged();
+                    }
+                });
             }
 
             @Override
