@@ -8,8 +8,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface WallhavenAPI {
     @GET("search")
-    Call<Wallpaper> listLatestWallpapers();
+    Call<Wallpaper> listLatestWallpapers(@Query("page") int page);
 }

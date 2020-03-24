@@ -57,7 +57,7 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         String urlThumbOriginal = mData.get(position).getThumbs().getOriginal();
-        Log.d(TAG, urlThumbOriginal);
+        //Log.d(TAG, urlThumbOriginal);
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
                         .build();

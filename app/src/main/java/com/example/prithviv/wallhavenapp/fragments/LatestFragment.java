@@ -13,12 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
@@ -26,16 +20,9 @@ import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -143,9 +130,9 @@ public class LatestFragment extends Fragment {
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-                int tenItemsBeforeEnd = totalItemCount - 10;
+                int fiveItemsBeforeEnd = totalItemCount - 5;
 
-                if (pastVisibleItems + visibleItemCount >= tenItemsBeforeEnd) {
+                if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
                     //getLatestWallpapers(LATEST_WALLPAPER_GET_REQUEST_URL);
                     getLatestWallpapers();
@@ -155,7 +142,8 @@ public class LatestFragment extends Fragment {
     }
 
     private void getLatestWallpapers() {
-        Call<Wallpaper> retroCall = wallhavenService.listLatestWallpapers();
+        setWallpapersLoading(true);
+        Call<Wallpaper> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
 
         retroCall.enqueue(new Callback<Wallpaper>() {
             @Override
@@ -166,7 +154,7 @@ public class LatestFragment extends Fragment {
                 //Log.d("JSON", wallpaper.getData().get(0).getUrl());
                 latestWallpapersList.addAll(wallpaper.getData());
                 latestWallpapersMeta = wallpaper.getMeta();
-                Log.d("JSON", latestWallpapersList.get(0).getUrl());
+                //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
                 handler.post(new Runnable() {
                     @Override
@@ -174,6 +162,7 @@ public class LatestFragment extends Fragment {
                         myLatestWallpapersAdapter.notifyDataSetChanged();
                     }
                 });
+                setWallpapersLoading(false);
             }
 
             @Override
@@ -190,9 +179,10 @@ public class LatestFragment extends Fragment {
 
     }
 
-    private String getNextPageNumberURL(String getRequestURL) {
+    private int getNextPageNumber() {
         pageNumber++;
-        return getRequestURL + "?page=" + pageNumber;
+        Log.d("Page", Integer.toString(pageNumber));
+        return pageNumber;
     }
 
     private void setWallpapersLoading(boolean input) {
