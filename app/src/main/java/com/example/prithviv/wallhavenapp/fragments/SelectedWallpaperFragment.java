@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
@@ -36,8 +37,7 @@ import static android.content.ContentValues.TAG;
 public class SelectedWallpaperFragment extends Fragment {
     public static final String ARG_POSITION = "position";
     public static final String ARG_ID = "ID";
-    private static final String WALLHAVEN_GET_REQUEST = "https://wallhaven.cc/api/v1/w/";
-    private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,8 +47,8 @@ public class SelectedWallpaperFragment extends Fragment {
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
     private Boolean wallpaperLoading;
-    private Retrofit retrofit;
     private WallhavenAPI wallhavenService;
+    RetrofitServer retrofitServer;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -82,12 +82,9 @@ public class SelectedWallpaperFragment extends Fragment {
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(WALLHAVEN_API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        retrofitServer = new RetrofitServer();
 
-        wallhavenService = retrofit.create(WallhavenAPI.class);
+        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getWallpaperData();
     }
@@ -117,6 +114,7 @@ public class SelectedWallpaperFragment extends Fragment {
                     Data data = response.body().getData();
                     setImageView(data);
                 }
+                setWallpaperLoading(false);
             }
 
             @Override

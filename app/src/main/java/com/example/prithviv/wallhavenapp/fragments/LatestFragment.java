@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
+import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
@@ -26,8 +27,8 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -49,13 +50,13 @@ public class LatestFragment extends Fragment {
     private RecyclerView latestRecyclerView;
     private LatestWallpapersAdapter myLatestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private WallpaperList latestWallpaperList;
+    private WallpaperList wallpaperList;
     private Meta latestWallpapersMeta;
     private List<Data> latestWallpapersList;
     private int pageNumber = 0;
     private boolean wallpapersLoading;
     private Handler handler;
-    private Retrofit retrofit;
+    private RetrofitServer retrofitServer;
     private WallhavenAPI wallhavenService;
 
     public LatestFragment() {
@@ -76,12 +77,8 @@ public class LatestFragment extends Fragment {
         latestWallpapersList = new ArrayList<>();
         handler = new Handler();
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(WALLHAVEN_API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        wallhavenService = retrofit.create(WallhavenAPI.class);
+        retrofitServer = new RetrofitServer();
+        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getLatestWallpapers();
     }
@@ -106,7 +103,6 @@ public class LatestFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-
         myLatestWallpapersAdapter = new LatestWallpapersAdapter(new ContextProvider() {
             @Override
             public Context getContext() {
@@ -114,7 +110,6 @@ public class LatestFragment extends Fragment {
                 //return MyActivity.this;       // For activities
             }
         }, wallpapers);
-
 
         latestRecyclerView.setAdapter(myLatestWallpapersAdapter);
     }
@@ -142,6 +137,7 @@ public class LatestFragment extends Fragment {
 
     private void getLatestWallpapers() {
         setWallpapersLoading(true);
+
         Call<WallpaperList> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
 
         retroCall.enqueue(new Callback<WallpaperList>() {
@@ -151,6 +147,7 @@ public class LatestFragment extends Fragment {
                     //Log.d("JSON", response.toString());
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
+
                     //Log.d("JSON", wallpaper.getData().get(0).getUrl());
                     latestWallpapersList.addAll(wallpaperList.getData());
                     latestWallpapersMeta = wallpaperList.getMeta();
@@ -171,13 +168,6 @@ public class LatestFragment extends Fragment {
                 Log.d("Error", t.getMessage());
             }
         });
-
-        /*
-        Wallpaper wallpaper = retroCall.execute().body();
-        latestWallpapersList.addAll(wallpaper.getData());
-        latestWallpapersMeta = wallpaper.getMeta();
-        */
-
     }
 
     private int getNextPageNumber() {

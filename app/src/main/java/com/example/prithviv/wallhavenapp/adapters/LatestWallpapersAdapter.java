@@ -98,6 +98,7 @@ public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpape
 
         private void launchSelectedWallpaperFragment(Data selectedWallpaper, Context context) {
             Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
+
             Bundle args = new Bundle();
             args.putInt(SelectedWallpaperFragment.ARG_POSITION, getAdapterPosition());
             args.putString(SelectedWallpaperFragment.ARG_ID, selectedWallpaper.getId());
