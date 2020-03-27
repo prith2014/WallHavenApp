@@ -4,12 +4,24 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.example.prithviv.wallhavenapp.ContextProvider;
+import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
+import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
+import com.example.prithviv.wallhavenapp.models.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -32,6 +44,16 @@ public class SearchFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     public SearchView searchView;
+    private List<Data> searchWallpapersList;
+    private Handler handler;
+    private RetrofitServer retrofitServer;
+    private WallhavenAPI wallhavenService;
+    private RecyclerView searchRecyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private WallpapersAdapter mySearchWallpapersAdapter;
+    private boolean wallpapersLoading;
+    private int pageNumber = 0;
+
 
     public SearchFragment() {
         // Required empty public constructor
@@ -62,16 +84,78 @@ public class SearchFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        searchWallpapersList = new ArrayList<>();
+        handler = new Handler();
+        retrofitServer = new RetrofitServer();
+        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        searchView = view.findViewById(R.id.search_image);
+        View searchView = inflater.inflate(R.layout.fragment_search, container, false);
+        searchView = searchView.findViewById(R.id.search_bar);
+        // Recycler view
+        searchRecyclerView = searchView.findViewById(R.id.toplist_recycler_view);
+        searchRecyclerView.setHasFixedSize(true);
+        // Linear layout manager
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        searchRecyclerView.setLayoutManager(linearLayoutManager);
 
-        return view;
+        setRecyclerViewAdapter(searchWallpapersList);
+        setScrollListener(searchRecyclerView);
+
+        return searchView;
+    }
+
+    private void setRecyclerViewAdapter(List<Data> wallpapers) {
+        mySearchWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+                //return MyActivity.this;       // For activities
+            }
+        }, wallpapers);
+
+        searchRecyclerView.setAdapter(mySearchWallpapersAdapter);
+    }
+
+    private void setScrollListener(RecyclerView mRecyclerView) {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (wallpapersLoading)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                int fiveItemsBeforeEnd = totalItemCount - 5;
+
+                if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
+                    //Five Items before end of list
+                    getSearchWallpapers(searchWallpapersList);
+                }
+            }
+        });
+    }
+
+    private int getNextPageNumber() {
+        pageNumber++;
+        //Log.d("Page", Integer.toString(pageNumber));
+        return pageNumber;
+    }
+
+    private void setWallpapersLoading(boolean input) {
+        wallpapersLoading = input;
+    }
+
+    private void getSearchWallpapers(List<Data> wallpapers) {
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

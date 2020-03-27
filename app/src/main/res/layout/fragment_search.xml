@@ -6,10 +6,14 @@
     tools:context=".fragments.SearchFragment">
 
     <SearchView
-        android:id="@+id/search_image"
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:iconifiedByDefault="false"
-        android:queryHint="@string/search_hint"/>
+        android:layout_height="100dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
 </FrameLayout>
