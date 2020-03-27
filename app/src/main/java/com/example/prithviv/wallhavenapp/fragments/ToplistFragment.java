@@ -43,8 +43,6 @@ public class ToplistFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private static final String topListWallpapersURL = "https://wallhaven.cc/api/v1/search?toplist";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -88,7 +86,6 @@ public class ToplistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "Toplist onCreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -101,13 +98,11 @@ public class ToplistFragment extends Fragment {
         wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getToplistWallpapers(topListWallpapersList);
-        Log.d(TAG, "Toplist onCreate End");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "Toplist onCreateView");
         // Inflate the layout for this fragment
         View toplistView =  inflater.inflate(R.layout.fragment_toplist, container, false);
         // Recycler view

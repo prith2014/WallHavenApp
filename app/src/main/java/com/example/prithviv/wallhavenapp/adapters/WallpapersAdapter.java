@@ -88,9 +88,9 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         @Override
         public void onClick(View view) {
 
-            Log.d(TAG, "position = " + this.getAdapterPosition());
+            //Log.d(TAG, "position = " + this.getAdapterPosition());
             Data selectedWallpaper = mData.get(getAdapterPosition());
-            Log.d("Selected Wallpaper", selectedWallpaper.getUrl());
+            //Log.d("Selected Wallpaper", selectedWallpaper.getUrl());
             Context context = mContextProvider.getContext();
 
             launchSelectedWallpaperFragment(selectedWallpaper, context);

@@ -169,7 +169,7 @@ public class LatestFragment extends Fragment {
 
     private int getNextPageNumber() {
         pageNumber++;
-        Log.d("Page", Integer.toString(pageNumber));
+        //Log.d("Page", Integer.toString(pageNumber));
         return pageNumber;
     }
 
