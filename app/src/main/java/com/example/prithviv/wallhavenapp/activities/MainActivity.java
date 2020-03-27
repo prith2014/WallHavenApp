@@ -17,7 +17,8 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements  LatestFragment.OnFragmentInteractionListener,
-                    SearchFragment.OnFragmentInteractionListener {
+                    SearchFragment.OnFragmentInteractionListener,
+                    ToplistFragment.OnFragmentInteractionListener {
 
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentSearch = new SearchFragment();
