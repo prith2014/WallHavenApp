@@ -30,13 +30,13 @@ import java.util.Random;
 import static android.content.ContentValues.TAG;
 
 
-public class LatestWallpapersAdapter extends RecyclerView.Adapter<LatestWallpapersAdapter.ViewHolder> {
+public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.ViewHolder> {
 
     private List<Data> mData;
     private LayoutInflater mInflater;
     private final ContextProvider mContextProvider;
 
-    public LatestWallpapersAdapter(ContextProvider contextProvider, List<Data> data) {
+    public WallpapersAdapter(ContextProvider contextProvider, List<Data> data) {
         this.mData = data;
         this.mContextProvider = contextProvider;
         this.mInflater = LayoutInflater.from(mContextProvider.getContext());

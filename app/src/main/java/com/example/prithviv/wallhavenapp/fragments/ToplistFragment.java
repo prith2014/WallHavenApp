@@ -18,7 +18,7 @@ import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.adapters.ToplistWallpapersAdapter;
+import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
@@ -52,7 +52,7 @@ public class ToplistFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView toplistRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private ToplistWallpapersAdapter myToplistWallpapersAdapter;
+    private WallpapersAdapter myToplistWallpapersAdapter;
 
     private List<Data> topListWallpapersList;
     private Meta topListWallpapersMeta;
@@ -100,7 +100,7 @@ public class ToplistFragment extends Fragment {
         retrofitServer = new RetrofitServer();
         wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
-        getToplistWallpapers();
+        getToplistWallpapers(topListWallpapersList);
         Log.d(TAG, "Toplist onCreate End");
     }
 
@@ -111,21 +111,74 @@ public class ToplistFragment extends Fragment {
         // Inflate the layout for this fragment
         View toplistView =  inflater.inflate(R.layout.fragment_toplist, container, false);
         // Recycler view
-        
+        toplistRecyclerView = toplistView.findViewById(R.id.toplist_recycler_view);
+        toplistRecyclerView.setHasFixedSize(true);
+        // Linear layout manager
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        toplistRecyclerView.setLayoutManager(linearLayoutManager);
+
+        setRecyclerViewAdapter(topListWallpapersList);
+        setScrollListener(toplistRecyclerView);
 
         return toplistView;
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
+        myToplistWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+                //return MyActivity.this;       // For activities
+            }
+        }, wallpapers);
 
+        toplistRecyclerView.setAdapter(myToplistWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (wallpapersLoading)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                int fiveItemsBeforeEnd = totalItemCount - 5;
+
+                if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
+                    //Five Items before end of list
+                    getToplistWallpapers(topListWallpapersList);
+                }
+            }
+        });
     }
 
-    private void getToplistWallpapers() {
+    private void getToplistWallpapers(List<Data> wallpapers) {
+        setWallpapersLoading(true);
 
+        Call<WallpaperList> retroCall = wallhavenService.listTopListWallpapers(110,
+                100, "1M", "toplist", "desc", getNextPageNumber());
+
+        retroCall.enqueue(new Callback<WallpaperList>() {
+            @Override
+            public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    WallpaperList wallpaperList = response.body();
+
+                    wallpapers.addAll(wallpaperList.getData());
+                    topListWallpapersMeta = wallpaperList.getMeta();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WallpaperList> call, Throwable t) {
+                Log.d("Error Toplist", t.getMessage());
+            }
+        });
     }
 
     private int getNextPageNumber() {

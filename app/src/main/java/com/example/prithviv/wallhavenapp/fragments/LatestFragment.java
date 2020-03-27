@@ -17,7 +17,7 @@ import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.adapters.LatestWallpapersAdapter;
+import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
@@ -27,8 +27,6 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import static android.content.ContentValues.TAG;
 
 
 /**
@@ -44,11 +42,10 @@ public class LatestFragment extends Fragment {
     private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
     private static final String LATEST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search";
     // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
-    private static final String TOPLIST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search?toplist";
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView latestRecyclerView;
-    private LatestWallpapersAdapter myLatestWallpapersAdapter;
+    private WallpapersAdapter myWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
     private WallpaperList wallpaperList;
     private Meta latestWallpapersMeta;
@@ -103,7 +100,7 @@ public class LatestFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        myLatestWallpapersAdapter = new LatestWallpapersAdapter(new ContextProvider() {
+        myWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
             @Override
             public Context getContext() {
                 return getActivity();
@@ -111,7 +108,7 @@ public class LatestFragment extends Fragment {
             }
         }, wallpapers);
 
-        latestRecyclerView.setAdapter(myLatestWallpapersAdapter);
+        latestRecyclerView.setAdapter(myWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {
@@ -156,7 +153,7 @@ public class LatestFragment extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            myLatestWallpapersAdapter.notifyDataSetChanged();
+                            myWallpapersAdapter.notifyDataSetChanged();
                         }
                     });
                     setWallpapersLoading(false);
