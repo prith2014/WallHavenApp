@@ -5,18 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SearchFragment">
 
-    <SearchView
-        android:iconifiedByDefault="true"
-        android:inputType="text"
-        android:queryHint="Search..."
+    <com.lapism.search.widget.SearchView
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="70dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="650dp"
         android:layout_below="@+id/search_bar"
         android:layout_gravity="bottom"
         android:layout_marginTop="10dp"

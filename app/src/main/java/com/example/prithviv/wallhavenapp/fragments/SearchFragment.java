@@ -49,7 +49,8 @@ public class SearchFragment extends Fragment {
     private RetrofitServer retrofitServer;
     private WallhavenAPI wallhavenService;
     private RecyclerView searchRecyclerView;
-    private SearchView searchBarView;
+    //private SearchView searchBarView;
+    private com.lapism.search.widget.SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
     private WallpapersAdapter mySearchWallpapersAdapter;
     private boolean wallpapersLoading;
