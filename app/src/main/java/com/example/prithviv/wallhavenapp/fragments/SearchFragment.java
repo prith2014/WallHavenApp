@@ -1,6 +1,7 @@
 package com.example.prithviv.wallhavenapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,7 @@ import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.activities.SearchableActivity;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.lapism.search.internal.SearchLayout;
@@ -123,6 +125,10 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(CharSequence charSequence) {
                 Log.d("Search", "Search Query Submitted: " + charSequence.toString());
+                Intent intent = new Intent(getActivity(), SearchableActivity.class);
+                intent.putExtra("search_value", charSequence.toString());
+                intent.setAction(Intent.ACTION_SEARCH);
+                startActivity(intent);
                 return false;
             }
         });

@@ -2,19 +2,20 @@ package com.example.prithviv.wallhavenapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class SearchableActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
 
+        Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
+            String query = intent.getStringExtra("search_value");
+            Log.d("Query", "Query in Searchable: " + query);
             doMySearch(query);
         }
     }
@@ -25,5 +26,6 @@ public class SearchableActivity extends AppCompatActivity {
      */
     public void doMySearch(String query) {
         // TODO: implement this
+
     }
 }
