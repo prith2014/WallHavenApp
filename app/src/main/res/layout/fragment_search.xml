@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.SearchFragment">
 
     <SearchView
+        android:iconifiedByDefault="true"
+        android:inputType="text"
+        android:queryHint="Search..."
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="70dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="700dp"
+        android:layout_below="@+id/search_bar"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="10dp"
         android:scrollbars="vertical" />
 
-</FrameLayout>
+</RelativeLayout>

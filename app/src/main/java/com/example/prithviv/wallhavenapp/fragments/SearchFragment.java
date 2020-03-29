@@ -49,6 +49,7 @@ public class SearchFragment extends Fragment {
     private RetrofitServer retrofitServer;
     private WallhavenAPI wallhavenService;
     private RecyclerView searchRecyclerView;
+    private SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
     private WallpapersAdapter mySearchWallpapersAdapter;
     private boolean wallpapersLoading;
@@ -97,9 +98,9 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View searchView = inflater.inflate(R.layout.fragment_search, container, false);
-        searchView = searchView.findViewById(R.id.search_bar);
+        searchBarView = searchView.findViewById(R.id.search_bar);
         // Recycler view
-        searchRecyclerView = searchView.findViewById(R.id.toplist_recycler_view);
+        searchRecyclerView = searchView.findViewById(R.id.search_recycler_view);
         searchRecyclerView.setHasFixedSize(true);
         // Linear layout manager
         linearLayoutManager = new LinearLayoutManager(getActivity());
