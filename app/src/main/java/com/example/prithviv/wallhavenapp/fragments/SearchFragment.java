@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
+import com.lapism.search.internal.SearchLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +84,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -109,6 +112,20 @@ public class SearchFragment extends Fragment {
 
         setRecyclerViewAdapter(searchWallpapersList);
         setScrollListener(searchRecyclerView);
+
+        searchBarView.setOnQueryTextListener(new SearchLayout.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(CharSequence charSequence) {
+                Log.d("Search", "Search Query: " + charSequence.toString());
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(CharSequence charSequence) {
+                Log.d("Search", "Search Query Submitted: " + charSequence.toString());
+                return false;
+            }
+        });
 
         return searchView;
     }
@@ -158,13 +175,6 @@ public class SearchFragment extends Fragment {
 
     private void getSearchWallpapers(List<Data> wallpapers) {
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
