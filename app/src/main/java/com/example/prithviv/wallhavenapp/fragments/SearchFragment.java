@@ -24,7 +24,6 @@ import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
-import com.lapism.search.internal.SearchLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +61,7 @@ public class SearchFragment extends Fragment {
     private RetrofitServer retrofitServer;
     private WallhavenAPI wallhavenService;
     private RecyclerView searchRecyclerView;
-    //private SearchView searchBarView;
-    private com.lapism.search.widget.SearchView searchBarView;
+    private SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
     private WallpapersAdapter mySearchWallpapersAdapter;
     private boolean wallpapersLoading;
@@ -125,25 +123,25 @@ public class SearchFragment extends Fragment {
         setRecyclerViewAdapter(searchWallpapersList);
         setScrollListener(searchRecyclerView);
 
-        searchBarView.setOnQueryTextListener(new SearchLayout.OnQueryTextListener() {
+        searchBarView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextChange(CharSequence charSequence) {
-                Log.d("Search", "Search Query: " + charSequence.toString());
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(CharSequence charSequence) {
-                Log.d("Search", "Search Query Submitted: " + charSequence.toString());
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Search", "Search Query Submitted: " + query);
                 /*
                 Intent intent = new Intent(getActivity(), SearchableActivity.class);
                 intent.putExtra("search_value", charSequence.toString());
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
                 */
-                searchQuery = charSequence.toString();
+                searchQuery = query;
                 getSearchWallpapers(searchWallpapersList, searchQuery);
                 searchBarView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("Search", "Search Query: " + newText);
                 return false;
             }
         });
