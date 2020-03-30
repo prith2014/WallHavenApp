@@ -3,11 +3,14 @@ package com.example.prithviv.wallhavenapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.prithviv.wallhavenapp.R;
+
+import static android.content.ContentValues.TAG;
 
 public class SearchableActivity extends ListActivity {
 
@@ -16,13 +19,6 @@ public class SearchableActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         handleIntent(getIntent());
-
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
-            String query = intent.getStringExtra("search_value");
-            Log.d("Query", "Query in Searchable: " + query);
-            doMySearch(query);
-        }
     }
 
     @Override
@@ -32,7 +28,7 @@ public class SearchableActivity extends ListActivity {
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra("search_value");
+            String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d("Query", "Query in Searchable: " + query);
             doMySearch(query);
         }
@@ -44,6 +40,6 @@ public class SearchableActivity extends ListActivity {
      */
     public void doMySearch(String query) {
         // TODO: implement this
-
+        Log.d(TAG, "doMySearch: " + query);
     }
 }

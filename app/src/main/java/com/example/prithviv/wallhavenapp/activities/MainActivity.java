@@ -1,5 +1,8 @@
 package com.example.prithviv.wallhavenapp.activities;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,11 +11,16 @@ import com.example.prithviv.wallhavenapp.fragments.LatestFragment;
 import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
 import com.example.prithviv.wallhavenapp.fragments.ToplistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
@@ -20,6 +28,7 @@ public class MainActivity extends AppCompatActivity
                     SearchFragment.OnFragmentInteractionListener,
                     ToplistFragment.OnFragmentInteractionListener {
 
+    private static final String TAG = "Main Activity TAG";
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentSearch = new SearchFragment();
     final Fragment fragmentToplist = new ToplistFragment();
@@ -62,6 +71,34 @@ public class MainActivity extends AppCompatActivity
         fm.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
         fm.beginTransaction().add(R.id.main_container, fragmentToplist, "fragToplist").hide(fragmentToplist).commit();
         fm.beginTransaction().add(R.id.main_container, fragmentLatest, "fragLatest").commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the options menu from XML
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        //Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+
+        assert searchManager != null;
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(getApplicationContext(), SearchableActivity.class)));
+        searchView.setIconifiedByDefault(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.app_bar_search:
+                //Log.d(TAG, "Search pressed");
+                onSearchRequested();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
