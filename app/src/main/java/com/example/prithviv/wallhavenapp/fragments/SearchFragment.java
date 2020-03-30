@@ -22,10 +22,18 @@ import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.activities.SearchableActivity;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
+import com.example.prithviv.wallhavenapp.models.Meta;
+import com.example.prithviv.wallhavenapp.models.WallpaperList;
 import com.lapism.search.internal.SearchLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -49,6 +57,7 @@ public class SearchFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public SearchView searchView;
     private List<Data> searchWallpapersList;
+    private Meta searchWallpaperMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
     private WallhavenAPI wallhavenService;
@@ -59,6 +68,7 @@ public class SearchFragment extends Fragment {
     private WallpapersAdapter mySearchWallpapersAdapter;
     private boolean wallpapersLoading;
     private int pageNumber = 0;
+    private String searchQuery;
 
 
     public SearchFragment() {
@@ -125,10 +135,15 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(CharSequence charSequence) {
                 Log.d("Search", "Search Query Submitted: " + charSequence.toString());
+                /*
                 Intent intent = new Intent(getActivity(), SearchableActivity.class);
                 intent.putExtra("search_value", charSequence.toString());
                 intent.setAction(Intent.ACTION_SEARCH);
                 startActivity(intent);
+                */
+                searchQuery = charSequence.toString();
+                getSearchWallpapers(searchWallpapersList, searchQuery);
+
                 return false;
             }
         });
@@ -163,7 +178,7 @@ public class SearchFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getSearchWallpapers(searchWallpapersList);
+                    getSearchWallpapers(searchWallpapersList, searchQuery);
                 }
             }
         });
@@ -179,8 +194,36 @@ public class SearchFragment extends Fragment {
         wallpapersLoading = input;
     }
 
-    private void getSearchWallpapers(List<Data> wallpapers) {
+    private void getSearchWallpapers(List<Data> wallpapers, String searchQuery) {
+        setWallpapersLoading(true);
 
+        Call<WallpaperList> retroCall = wallhavenService.listSearchWallpapers(searchQuery, getNextPageNumber());
+
+        retroCall.enqueue(new Callback<WallpaperList>() {
+            @Override
+            public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
+                if (response.isSuccessful()) {
+                    //Log.d(TAG, response.toString());
+                    WallpaperList wallpaperList = response.body();
+
+                    assert wallpaperList != null;
+                    wallpapers.addAll(wallpaperList.getData());
+                    searchWallpaperMeta = wallpaperList.getMeta();
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mySearchWallpapersAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    setWallpapersLoading(false);
+                }
+            }
+            @Override
+            public void onFailure(Call<WallpaperList> call, Throwable t) {
+                Log.d("Error Toplist", t.getMessage());
+            }
+        });
     }
 
     @Override

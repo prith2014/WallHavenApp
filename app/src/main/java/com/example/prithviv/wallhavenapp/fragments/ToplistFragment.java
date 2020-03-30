@@ -166,9 +166,16 @@ public class ToplistFragment extends Fragment {
 
                     wallpapers.addAll(wallpaperList.getData());
                     topListWallpapersMeta = wallpaperList.getMeta();
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            myToplistWallpapersAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    setWallpapersLoading(false);
                 }
             }
-
             @Override
             public void onFailure(Call<WallpaperList> call, Throwable t) {
                 Log.d("Error Toplist", t.getMessage());
