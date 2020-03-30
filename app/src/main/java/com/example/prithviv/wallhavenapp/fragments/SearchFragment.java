@@ -127,15 +127,17 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("Search", "Search Query Submitted: " + query);
-                /*
-                Intent intent = new Intent(getActivity(), SearchableActivity.class);
-                intent.putExtra("search_value", charSequence.toString());
-                intent.setAction(Intent.ACTION_SEARCH);
-                startActivity(intent);
-                */
                 searchQuery = query;
-                getSearchWallpapers(searchWallpapersList, searchQuery);
+
+
+                Intent intent = new Intent(getActivity(), SearchableActivity.class);
+                intent.putExtra("search_value", searchQuery);
+                intent.setAction(Intent.ACTION_SEARCH);
                 searchBarView.clearFocus();
+                startActivity(intent);
+
+                //getSearchWallpapers(searchWallpapersList, searchQuery);
+                //searchBarView.clearFocus();
                 return false;
             }
 
