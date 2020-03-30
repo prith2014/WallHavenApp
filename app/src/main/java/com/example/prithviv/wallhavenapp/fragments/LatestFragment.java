@@ -77,7 +77,7 @@ public class LatestFragment extends Fragment {
         retrofitServer = new RetrofitServer();
         wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
-        getLatestWallpapers();
+        getLatestWallpapers(latestWallpapersList);
     }
 
     @Override
@@ -126,13 +126,13 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getLatestWallpapers();
+                    getLatestWallpapers(latestWallpapersList);
                 }
             }
         });
     }
 
-    private void getLatestWallpapers() {
+    private void getLatestWallpapers(List<Data> wallpapers) {
         setWallpapersLoading(true);
 
         Call<WallpaperList> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
@@ -146,7 +146,7 @@ public class LatestFragment extends Fragment {
                     assert wallpaperList != null;
 
                     //Log.d("JSON", wallpaper.getData().get(0).getUrl());
-                    latestWallpapersList.addAll(wallpaperList.getData());
+                    wallpapers.addAll(wallpaperList.getData());
                     latestWallpapersMeta = wallpaperList.getMeta();
                     //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
