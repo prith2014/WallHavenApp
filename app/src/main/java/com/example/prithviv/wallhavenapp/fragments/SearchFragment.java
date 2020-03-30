@@ -143,7 +143,7 @@ public class SearchFragment extends Fragment {
                 */
                 searchQuery = charSequence.toString();
                 getSearchWallpapers(searchWallpapersList, searchQuery);
-
+                searchBarView.clearFocus();
                 return false;
             }
         });
