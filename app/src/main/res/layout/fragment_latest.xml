@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        card_view:cardCornerRadius="6dp">
+        card_view:cardCornerRadius="6dp"
+        app:liftOnScroll="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
@@ -34,17 +35,31 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        app:elevation="0dp"
         app:liftOnScroll="true">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            card_view:cardCornerRadius="6dp">
 
-        </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                card_view:defaultQueryHint="@string/search">
+
+            </androidx.appcompat.widget.SearchView>
+
+        </androidx.cardview.widget.CardView>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
