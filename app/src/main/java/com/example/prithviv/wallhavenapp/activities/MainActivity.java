@@ -1,20 +1,15 @@
 package com.example.prithviv.wallhavenapp.activities;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
-import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.LatestFragment;
 import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
 import com.example.prithviv.wallhavenapp.fragments.ToplistFragment;
-import com.example.prithviv.wallhavenapp.models.Data;
-import com.example.prithviv.wallhavenapp.models.WallpaperList;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.widget.SearchView;
@@ -24,22 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity
         implements  LatestFragment.OnFragmentInteractionListener,
@@ -50,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentSearch = new SearchFragment();
     final Fragment fragmentToplist = new ToplistFragment();
-    final FragmentManager fm = getSupportFragmentManager();
+    final FragmentManager fragmentManager = getSupportFragmentManager();
 
     Fragment active = fragmentLatest;
 
@@ -61,15 +44,15 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_latest:
-                    fm.beginTransaction().hide(active).show(fragmentLatest).commit();
+                    fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
                     active = fragmentLatest;
                     return true;
                 case R.id.search_dashboard:
-                    fm.beginTransaction().hide(active).show(fragmentSearch).commit();
+                    fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
                     active = fragmentSearch;
                     return true;
                 case R.id.navigation_toplist:
-                    fm.beginTransaction().hide(active).show(fragmentToplist).commit();
+                    fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
                     active = fragmentToplist;
                     return true;
             }
@@ -86,9 +69,9 @@ public class MainActivity extends AppCompatActivity
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Fragments
-        fm.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
-        fm.beginTransaction().add(R.id.main_container, fragmentToplist, "fragToplist").hide(fragmentToplist).commit();
-        fm.beginTransaction().add(R.id.main_container, fragmentLatest, "fragLatest").commit();
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentToplist, "fragToplist").hide(fragmentToplist).commit();
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentLatest, "fragLatest").commit();
 
         handleIntent(getIntent());
     }
@@ -118,28 +101,11 @@ public class MainActivity extends AppCompatActivity
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d("Query", "Query in Main: " + query);
-            //doMySearch(query);
 
-            Bundle bundle = new Bundle();
-            bundle.putString(SearchManager.QUERY, query);
-            SearchFragment searchFragment = new SearchFragment();
-            searchFragment.setArguments(bundle);
-
-            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-            fragmentTransaction.replace(R.id.main_container, searchFragment);
-            fragmentTransaction.commit();
+            // TODO: Bottom Navigation bar does not work with this method
+            fragmentManager.beginTransaction().replace(R.id.main_container, SearchFragment.newInstance(query)).commit();
         }
     }
-
-    /**
-     * Performs a search and passes the results to the container
-     * Activity that holds your Fragments.
-     */
-    public void doMySearch(String query) {
-        Log.d(TAG, "doMySearch: " + query);
-        // Pass into search fragment
-    }
-
 
     @Override
     public void onFragmentInteraction(Uri uri) {
