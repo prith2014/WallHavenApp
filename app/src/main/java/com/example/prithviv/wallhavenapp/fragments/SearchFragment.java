@@ -1,5 +1,6 @@
 package com.example.prithviv.wallhavenapp.fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +20,7 @@ import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.activities.SearchableActivity;
+import com.example.prithviv.wallhavenapp.activities.MainActivity;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
@@ -31,8 +32,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 
 /**
@@ -129,9 +128,8 @@ public class SearchFragment extends Fragment {
                 Log.d("Search", "Search Query Submitted: " + query);
                 searchQuery = query;
 
-
-                Intent intent = new Intent(getActivity(), SearchableActivity.class);
-                intent.putExtra("search_value", searchQuery);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra(SearchManager.QUERY, query);
                 intent.setAction(Intent.ACTION_SEARCH);
                 searchBarView.clearFocus();
                 startActivity(intent);
@@ -147,6 +145,12 @@ public class SearchFragment extends Fragment {
                 return false;
             }
         });
+
+        if (getArguments() != null) {
+            searchQuery = getArguments().getString(SearchManager.QUERY);
+            Log.d("Search", "Search this: " + searchQuery);
+            getSearchWallpapers(searchWallpapersList, searchQuery);
+        }
 
         return searchView;
     }
