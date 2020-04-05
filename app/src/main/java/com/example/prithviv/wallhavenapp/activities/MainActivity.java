@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "Main Activity TAG";
     final Fragment fragmentLatest = new LatestFragment();
-    final Fragment fragmentSearch = new SearchFragment();
+    Fragment fragmentSearch = new SearchFragment();
     final Fragment fragmentToplist = new ToplistFragment();
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -102,8 +101,14 @@ public class MainActivity extends AppCompatActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d("Query", "Query in Main: " + query);
 
-            // TODO: Bottom Navigation bar does not work with this method
-            fragmentManager.beginTransaction().replace(R.id.main_container, SearchFragment.newInstance(query)).commit();
+            // TODO: Still Glitchy
+            //fragmentManager.beginTransaction().remove(fragmentSearch);
+            //fragmentSearch = SearchFragment.newInstance(query);
+            //fragmentManager.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").commit();
+
+            SearchFragment tempSearchFragment = SearchFragment.newInstance(query);
+            fragmentManager.beginTransaction().remove(fragmentSearch).add(R.id.main_container, tempSearchFragment, "fragSearch").commit();
+            fragmentSearch = tempSearchFragment;
         }
     }
 
