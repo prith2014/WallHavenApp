@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
+import com.example.prithviv.wallhavenapp.activities.MainActivity;
 import com.example.prithviv.wallhavenapp.fragments.SelectedWallpaperFragment;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Random;
 
 import static android.content.ContentValues.TAG;
-
 
 public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.ViewHolder> {
 

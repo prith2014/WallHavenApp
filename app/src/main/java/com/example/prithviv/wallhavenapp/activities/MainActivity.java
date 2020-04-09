@@ -29,9 +29,13 @@ public class MainActivity extends AppCompatActivity
                     ToplistFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "Main Activity TAG";
+    public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
+    public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
+
+
     final Fragment fragmentLatest = new LatestFragment();
-    Fragment fragmentSearch = new SearchFragment();
     final Fragment fragmentToplist = new ToplistFragment();
+    Fragment fragmentSearch = new SearchFragment();
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     Fragment active = fragmentLatest;
@@ -69,8 +73,8 @@ public class MainActivity extends AppCompatActivity
 
         //Fragments
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
-        fragmentManager.beginTransaction().add(R.id.main_container, fragmentToplist, "fragToplist").hide(fragmentToplist).commit();
-        fragmentManager.beginTransaction().add(R.id.main_container, fragmentLatest, "fragLatest").commit();
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentToplist, TOPLIST_FRAGMENT_TAG).hide(fragmentToplist).commit();
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentLatest, LATEST_FRAGMENT_TAG).commit();
 
         handleIntent(getIntent());
     }
@@ -106,6 +110,10 @@ public class MainActivity extends AppCompatActivity
             fragmentSearch = tempSearchFragment;
             active = fragmentSearch;
         }
+    }
+
+    public void setActiveFragment(Fragment fragment) {
+        active = fragment;
     }
 
     @Override

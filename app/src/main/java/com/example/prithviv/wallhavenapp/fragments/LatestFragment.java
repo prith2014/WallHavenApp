@@ -43,6 +43,8 @@ public class LatestFragment extends Fragment {
     private static final String LATEST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search";
     // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
 
+    public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
+
     private OnFragmentInteractionListener mListener;
     private RecyclerView latestRecyclerView;
     private WallpapersAdapter myWallpapersAdapter;

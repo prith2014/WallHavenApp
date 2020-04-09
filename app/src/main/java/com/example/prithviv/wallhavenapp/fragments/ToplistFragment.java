@@ -47,6 +47,8 @@ public class ToplistFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
+
     private OnFragmentInteractionListener mListener;
     private RecyclerView toplistRecyclerView;
     private LinearLayoutManager linearLayoutManager;
