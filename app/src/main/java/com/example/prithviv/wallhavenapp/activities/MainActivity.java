@@ -101,14 +101,10 @@ public class MainActivity extends AppCompatActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d("Query", "Query in Main: " + query);
 
-            // TODO: Still Glitchy
-            //fragmentManager.beginTransaction().remove(fragmentSearch);
-            //fragmentSearch = SearchFragment.newInstance(query);
-            //fragmentManager.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").commit();
-
             SearchFragment tempSearchFragment = SearchFragment.newInstance(query);
             fragmentManager.beginTransaction().remove(fragmentSearch).add(R.id.main_container, tempSearchFragment, "fragSearch").commit();
             fragmentSearch = tempSearchFragment;
+            active = fragmentSearch;
         }
     }
 
