@@ -29,6 +29,7 @@
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                card_view:iconifiedByDefault="false"
                 card_view:defaultQueryHint="@string/search">
 
             </androidx.appcompat.widget.SearchView>

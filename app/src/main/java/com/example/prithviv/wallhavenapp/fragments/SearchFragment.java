@@ -125,6 +125,7 @@ public class SearchFragment extends Fragment {
             searchQuery = getArguments().getString(SearchManager.QUERY);
             Log.d("Search", "Search this: " + searchQuery);
             getSearchWallpapers(searchWallpapersList, searchQuery);
+            searchBarView.setQuery(searchQuery, false);
         }
 
         return searchView;
