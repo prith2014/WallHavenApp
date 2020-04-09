@@ -56,7 +56,7 @@ public class LatestFragment extends Fragment {
     private boolean wallpapersLoading;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenService;
+    private WallhavenAPI wallhavenAPI;
 
     public LatestFragment() {
         // Required empty public constructor
@@ -77,7 +77,7 @@ public class LatestFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
-        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
+        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getLatestWallpapers(latestWallpapersList);
     }
@@ -137,7 +137,7 @@ public class LatestFragment extends Fragment {
     private void getLatestWallpapers(List<Data> wallpapers) {
         setWallpapersLoading(true);
 
-        Call<WallpaperList> retroCall = wallhavenService.listLatestWallpapers(getNextPageNumber());
+        Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getNextPageNumber());
 
         retroCall.enqueue(new Callback<WallpaperList>() {
             @Override

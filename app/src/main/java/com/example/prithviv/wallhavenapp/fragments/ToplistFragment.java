@@ -58,7 +58,7 @@ public class ToplistFragment extends Fragment {
     private Meta topListWallpapersMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenService;
+    private WallhavenAPI wallhavenAPI;
     private boolean wallpapersLoading;
     private int pageNumber = 0;
 
@@ -97,7 +97,7 @@ public class ToplistFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
-        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
+        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getToplistWallpapers(topListWallpapersList);
     }
@@ -156,7 +156,7 @@ public class ToplistFragment extends Fragment {
     private void getToplistWallpapers(List<Data> wallpapers) {
         setWallpapersLoading(true);
 
-        Call<WallpaperList> retroCall = wallhavenService.listTopListWallpapers(110,
+        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(110,
                 100, "1M", "toplist", "desc", getNextPageNumber());
 
         retroCall.enqueue(new Callback<WallpaperList>() {

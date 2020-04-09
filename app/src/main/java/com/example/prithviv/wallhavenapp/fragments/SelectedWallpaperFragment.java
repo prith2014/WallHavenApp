@@ -15,17 +15,13 @@ import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
-import com.example.prithviv.wallhavenapp.models.WallpaperList;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.google.gson.Gson;
 
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.ContentValues.TAG;
 
@@ -47,7 +43,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
     private Boolean wallpaperLoading;
-    private WallhavenAPI wallhavenService;
+    private WallhavenAPI wallhavenAPI;
     RetrofitServer retrofitServer;
 
     public SelectedWallpaperFragment() {
@@ -84,7 +80,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
         retrofitServer = new RetrofitServer();
 
-        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
+        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
         getWallpaperData();
     }
@@ -103,7 +99,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private void getWallpaperData() {
         setWallpaperLoading(true);
 
-        Call<Wallpaper> retroCall = wallhavenService.getWallpaper(selectedWallpaperID);
+        Call<Wallpaper> retroCall = wallhavenAPI.getWallpaper(selectedWallpaperID);
 
         retroCall.enqueue(new Callback<Wallpaper>() {
             @Override

@@ -50,7 +50,7 @@ public class SearchFragment extends Fragment {
     private Meta searchWallpaperMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenService;
+    private WallhavenAPI wallhavenAPI;
     private RecyclerView searchRecyclerView;
     private SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
@@ -79,7 +79,7 @@ public class SearchFragment extends Fragment {
         searchWallpapersList = new ArrayList<>();
         handler = new Handler();
         retrofitServer = new RetrofitServer();
-        wallhavenService = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
+        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
     }
 
@@ -177,7 +177,7 @@ public class SearchFragment extends Fragment {
     private void getSearchWallpapers(List<Data> wallpapers, String searchQuery) {
         setWallpapersLoading(true);
 
-        Call<WallpaperList> retroCall = wallhavenService.listSearchWallpapers(searchQuery, getNextPageNumber());
+        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getNextPageNumber());
 
         retroCall.enqueue(new Callback<WallpaperList>() {
             @Override
