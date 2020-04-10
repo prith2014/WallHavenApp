@@ -41,15 +41,22 @@ public class RetrofitServer {
         return isWallpaperLoading;
     }
 
-    public WallpaperList getWallpapers(WallpaperList wallpaperList) {
+    public WallpaperList getWallpapers() {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getNextPageNumber());
+        WallpaperList wallpaperList = new WallpaperList();
 
         retroCall.enqueue(new Callback<WallpaperList>() {
             @Override
             public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     //wallpaperList = response.body();
+                    //wallpaperList.setData(response.body().getData());
+                    //wallpaperList.setMeta(response.body().getMeta());
+
+                    wallpaperList.parseResponse(response.body());
+                    setIsWallpaperLoading(false);
                 }
             }
 

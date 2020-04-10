@@ -77,9 +77,20 @@ public class LatestFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
-        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
-        getLatestWallpapers(latestWallpapersList);
+        wallpaperList = retrofitServer.getWallpapers();
+        assert wallpaperList != null;
+        if (!retrofitServer.isWallpaperLoading()) {
+            latestWallpapersList.addAll(wallpaperList.getData());
+            latestWallpapersMeta = wallpaperList.getMeta();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    myWallpapersAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     @Override
@@ -128,7 +139,10 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getLatestWallpapers(latestWallpapersList);
+                    //getLatestWallpapers(latestWallpapersList);
+                    wallpaperList = retrofitServer.getWallpapers();
+                    latestWallpapersList.addAll(wallpaperList.getData());
+                    latestWallpapersMeta = wallpaperList.getMeta();
                 }
             }
         });
