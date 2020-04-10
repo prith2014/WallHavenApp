@@ -9,7 +9,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+/*
+I think what you want is to write a facade
+that's an interface with the methods you want
 
+your program is concerned with, for example, there existing a, I dunno, getProducts method, which returns a list of products
+you might then implement that facade, which contains that method, via the http requests
+and then you might implement it again to just return a static value for testing or developing
+
+I would have a WallpaperFacade, which is an interface, that has a method getWallpapers
+then a WallpaperService, which is a class, which implements that Facade, and which handles the http calls
+
+ */
 public class RetrofitServer {
     private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
     private Retrofit retrofit;
@@ -41,32 +52,17 @@ public class RetrofitServer {
         return isWallpaperLoading;
     }
 
-    public WallpaperList getWallpapers() {
+    public Call<WallpaperList> getLatestWallpapersCall() {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getNextPageNumber());
-        WallpaperList wallpaperList = new WallpaperList();
+        return retroCall;
+    }
 
-        retroCall.enqueue(new Callback<WallpaperList>() {
-            @Override
-            public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    //wallpaperList = response.body();
-                    //wallpaperList.setData(response.body().getData());
-                    //wallpaperList.setMeta(response.body().getMeta());
-
-                    wallpaperList.parseResponse(response.body());
-                    setIsWallpaperLoading(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WallpaperList> call, Throwable t) {
-                Log.d("Error", t.getMessage());
-            }
-        });
-
-        return wallpaperList;
+    public Call<WallpaperList> getToplistWallpapersCall() {
+        setIsWallpaperLoading(true);
+        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(110,
+                100, "1M", "toplist", "desc", getNextPageNumber());
+        return retroCall;
     }
 
     private int getNextPageNumber() {

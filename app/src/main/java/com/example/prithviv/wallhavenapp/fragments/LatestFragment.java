@@ -52,11 +52,8 @@ public class LatestFragment extends Fragment {
     private WallpaperList wallpaperList;
     private Meta latestWallpapersMeta;
     private List<Data> latestWallpapersList;
-    private int pageNumber = 0;
-    private boolean wallpapersLoading;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenAPI;
 
     public LatestFragment() {
         // Required empty public constructor
@@ -77,20 +74,7 @@ public class LatestFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
-
-        wallpaperList = retrofitServer.getWallpapers();
-        assert wallpaperList != null;
-        if (!retrofitServer.isWallpaperLoading()) {
-            latestWallpapersList.addAll(wallpaperList.getData());
-            latestWallpapersMeta = wallpaperList.getMeta();
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    myWallpapersAdapter.notifyDataSetChanged();
-                }
-            });
-        }
+        getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
     }
 
     @Override
@@ -129,7 +113,7 @@ public class LatestFragment extends Fragment {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (wallpapersLoading)
+                if (retrofitServer.isWallpaperLoading())
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -139,21 +123,14 @@ public class LatestFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    //getLatestWallpapers(latestWallpapersList);
-                    wallpaperList = retrofitServer.getWallpapers();
-                    latestWallpapersList.addAll(wallpaperList.getData());
-                    latestWallpapersMeta = wallpaperList.getMeta();
+                    getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
                 }
             }
         });
     }
 
-    private void getLatestWallpapers(List<Data> wallpapers) {
-        setWallpapersLoading(true);
-
-        Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getNextPageNumber());
-
-        retroCall.enqueue(new Callback<WallpaperList>() {
+    private void getLatestWallpapers(Call<WallpaperList> call) {
+        call.enqueue(new Callback<WallpaperList>() {
             @Override
             public void onResponse(Call<WallpaperList> call, retrofit2.Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
@@ -162,7 +139,7 @@ public class LatestFragment extends Fragment {
                     assert wallpaperList != null;
 
                     //Log.d("JSON", wallpaper.getData().get(0).getUrl());
-                    wallpapers.addAll(wallpaperList.getData());
+                    latestWallpapersList.addAll(wallpaperList.getData());
                     latestWallpapersMeta = wallpaperList.getMeta();
                     //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
@@ -172,7 +149,7 @@ public class LatestFragment extends Fragment {
                             myWallpapersAdapter.notifyDataSetChanged();
                         }
                     });
-                    setWallpapersLoading(false);
+                    retrofitServer.setIsWallpaperLoading(false);
                 }
             }
 
@@ -181,16 +158,6 @@ public class LatestFragment extends Fragment {
                 Log.d("Error", t.getMessage());
             }
         });
-    }
-
-    private int getNextPageNumber() {
-        pageNumber++;
-        //Log.d("Page", Integer.toString(pageNumber));
-        return pageNumber;
-    }
-
-    private void setWallpapersLoading(boolean input) {
-        wallpapersLoading = input;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

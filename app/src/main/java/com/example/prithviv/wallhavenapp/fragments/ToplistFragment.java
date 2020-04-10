@@ -58,9 +58,6 @@ public class ToplistFragment extends Fragment {
     private Meta topListWallpapersMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenAPI;
-    private boolean wallpapersLoading;
-    private int pageNumber = 0;
 
 
     public ToplistFragment() {
@@ -97,9 +94,7 @@ public class ToplistFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
-        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
-
-        getToplistWallpapers(topListWallpapersList);
+        getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
     @Override
@@ -137,7 +132,7 @@ public class ToplistFragment extends Fragment {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (wallpapersLoading)
+                if (retrofitServer.isWallpaperLoading())
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -147,26 +142,21 @@ public class ToplistFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getToplistWallpapers(topListWallpapersList);
+                    getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
                 }
             }
         });
     }
 
-    private void getToplistWallpapers(List<Data> wallpapers) {
-        setWallpapersLoading(true);
-
-        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(110,
-                100, "1M", "toplist", "desc", getNextPageNumber());
-
-        retroCall.enqueue(new Callback<WallpaperList>() {
+    private void getToplistWallpapers(Call<WallpaperList> call) {
+        call.enqueue(new Callback<WallpaperList>() {
             @Override
             public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
 
-                    wallpapers.addAll(wallpaperList.getData());
+                    topListWallpapersList.addAll(wallpaperList.getData());
                     topListWallpapersMeta = wallpaperList.getMeta();
 
                     handler.post(new Runnable() {
@@ -175,7 +165,7 @@ public class ToplistFragment extends Fragment {
                             myToplistWallpapersAdapter.notifyDataSetChanged();
                         }
                     });
-                    setWallpapersLoading(false);
+                    retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override
@@ -183,16 +173,6 @@ public class ToplistFragment extends Fragment {
                 Log.d("Error Toplist", t.getMessage());
             }
         });
-    }
-
-    private int getNextPageNumber() {
-        pageNumber++;
-        //Log.d("Page", Integer.toString(pageNumber));
-        return pageNumber;
-    }
-
-    private void setWallpapersLoading(boolean input) {
-        wallpapersLoading = input;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
