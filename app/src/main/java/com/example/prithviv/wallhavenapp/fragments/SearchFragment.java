@@ -18,7 +18,6 @@ import androidx.appcompat.widget.SearchView;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
-import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.activities.MainActivity;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;

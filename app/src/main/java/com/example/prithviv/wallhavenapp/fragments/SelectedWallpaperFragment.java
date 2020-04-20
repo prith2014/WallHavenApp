@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
-import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
@@ -43,6 +42,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
     private RetrofitServer retrofitServer;
+    private Data selectedWallpaperData;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -98,8 +98,9 @@ public class SelectedWallpaperFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     assert response.body() != null;
-                    Data data = response.body().getData();
-                    setImageView(data);
+
+                    selectedWallpaperData = response.body().getData();
+                    setImageView(selectedWallpaperData);
                 }
                 retrofitServer.setIsWallpaperLoading(false);
             }
