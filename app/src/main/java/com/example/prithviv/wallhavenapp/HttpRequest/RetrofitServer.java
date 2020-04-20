@@ -65,6 +65,12 @@ public class RetrofitServer {
         return retroCall;
     }
 
+    public Call<WallpaperList> getSearchWallpapersCall(String searchQuery) {
+        setIsWallpaperLoading(true);
+        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getNextPageNumber());
+        return retroCall;
+    }
+
     private int getNextPageNumber() {
         pageNumber++;
         //Log.d("Page", Integer.toString(pageNumber));

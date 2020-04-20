@@ -46,17 +46,14 @@ public class SearchFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     public SearchView searchView;
-    private List<Data> searchWallpapersList;
+    private List<Data> searchWallpapersArrayList;
     private Meta searchWallpaperMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
-    private WallhavenAPI wallhavenAPI;
     private RecyclerView searchRecyclerView;
     private SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
     private WallpapersAdapter mySearchWallpapersAdapter;
-    private boolean wallpapersLoading;
-    private int pageNumber = 0;
     private String searchQuery;
 
 
@@ -76,11 +73,10 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchWallpapersList = new ArrayList<>();
+        searchWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
-        retrofitServer = new RetrofitServer();
-        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
 
+        retrofitServer = new RetrofitServer();
     }
 
     @Override
@@ -96,7 +92,7 @@ public class SearchFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(linearLayoutManager);
 
-        setRecyclerViewAdapter(searchWallpapersList);
+        setRecyclerViewAdapter(searchWallpapersArrayList);
         setScrollListener(searchRecyclerView);
 
         searchBarView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -124,7 +120,7 @@ public class SearchFragment extends Fragment {
         if (getArguments() != null) {
             searchQuery = getArguments().getString(SearchManager.QUERY);
             Log.d("Search", "Search this: " + searchQuery);
-            getSearchWallpapers(searchWallpapersList, searchQuery);
+            getSearchWallpapers(retrofitServer.getSearchWallpapersCall(searchQuery));
             searchBarView.setQuery(searchQuery, false);
         }
 
@@ -148,7 +144,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (wallpapersLoading)
+                if (retrofitServer.isWallpaperLoading())
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -158,36 +154,22 @@ public class SearchFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getSearchWallpapers(searchWallpapersList, searchQuery);
+                    getSearchWallpapers(retrofitServer.getSearchWallpapersCall(searchQuery));
                 }
             }
         });
     }
 
-    private int getNextPageNumber() {
-        pageNumber++;
-        //Log.d("Page", Integer.toString(pageNumber));
-        return pageNumber;
-    }
-
-    private void setWallpapersLoading(boolean input) {
-        wallpapersLoading = input;
-    }
-
-    private void getSearchWallpapers(List<Data> wallpapers, String searchQuery) {
-        setWallpapersLoading(true);
-
-        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getNextPageNumber());
-
-        retroCall.enqueue(new Callback<WallpaperList>() {
+    private void getSearchWallpapers(Call<WallpaperList> call) {
+        call.enqueue(new Callback<WallpaperList>() {
             @Override
             public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     //Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
-
                     assert wallpaperList != null;
-                    wallpapers.addAll(wallpaperList.getData());
+
+                    wallpaperList.parseResponse(searchWallpapersArrayList);
                     searchWallpaperMeta = wallpaperList.getMeta();
 
                     handler.post(new Runnable() {
@@ -196,7 +178,7 @@ public class SearchFragment extends Fragment {
                             mySearchWallpapersAdapter.notifyDataSetChanged();
                         }
                     });
-                    setWallpapersLoading(false);
+                    retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override

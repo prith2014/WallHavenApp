@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
-import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
@@ -51,7 +50,7 @@ public class LatestFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private WallpaperList wallpaperList;
     private Meta latestWallpapersMeta;
-    private List<Data> latestWallpapersList;
+    private List<Data> latestWallpapersArrayList;
     private Handler handler;
     private RetrofitServer retrofitServer;
 
@@ -70,7 +69,7 @@ public class LatestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        latestWallpapersList = new ArrayList<>();
+        latestWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
@@ -90,7 +89,7 @@ public class LatestFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         latestRecyclerView.setLayoutManager(linearLayoutManager);
 
-        setRecyclerViewAdapter(latestWallpapersList);
+        setRecyclerViewAdapter(latestWallpapersArrayList);
         setScrollListener(latestRecyclerView);
 
         return latestView;
@@ -139,7 +138,7 @@ public class LatestFragment extends Fragment {
                     assert wallpaperList != null;
 
                     //Log.d("JSON", wallpaper.getData().get(0).getUrl());
-                    latestWallpapersList.addAll(wallpaperList.getData());
+                    wallpaperList.parseResponse(latestWallpapersArrayList);
                     latestWallpapersMeta = wallpaperList.getMeta();
                     //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 

@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
-import com.example.prithviv.wallhavenapp.HttpRequest.WallhavenAPI;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
@@ -54,7 +53,7 @@ public class ToplistFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private WallpapersAdapter myToplistWallpapersAdapter;
 
-    private List<Data> topListWallpapersList;
+    private List<Data> topListWallpapersArrayList;
     private Meta topListWallpapersMeta;
     private Handler handler;
     private RetrofitServer retrofitServer;
@@ -90,7 +89,7 @@ public class ToplistFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        topListWallpapersList = new ArrayList<>();
+        topListWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
         retrofitServer = new RetrofitServer();
@@ -109,7 +108,7 @@ public class ToplistFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         toplistRecyclerView.setLayoutManager(linearLayoutManager);
 
-        setRecyclerViewAdapter(topListWallpapersList);
+        setRecyclerViewAdapter(topListWallpapersArrayList);
         setScrollListener(toplistRecyclerView);
 
         return toplistView;
@@ -155,8 +154,9 @@ public class ToplistFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
+                    assert wallpaperList != null;
 
-                    topListWallpapersList.addAll(wallpaperList.getData());
+                    wallpaperList.parseResponse(topListWallpapersArrayList);
                     topListWallpapersMeta = wallpaperList.getMeta();
 
                     handler.post(new Runnable() {

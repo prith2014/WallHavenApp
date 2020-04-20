@@ -30,9 +30,7 @@ public class WallpaperList {
         this.meta = meta;
     }
 
-    public void parseResponse(WallpaperList wallpaperList) {
-        for (int i = 0; i < wallpaperList.getData().size(); i++) {
-            data.add(wallpaperList.getData().get(i));
-        }
+    public void parseResponse(List<Data> list) {
+        list.addAll(data);
     }
 }
