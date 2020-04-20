@@ -55,13 +55,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     // Binds the data to the SimpleDraweeView in each row
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String urlThumbOriginal = mData.get(position).getThumbs().getOriginal();
-        //Log.d(TAG, urlThumbOriginal);
-        final ImageRequest imageRequest =
-                ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
-                        .build();
-        viewHolder.mSimpleDraweeView.setImageRequest(imageRequest);
-
+        setImageView(viewHolder, position);
     }
 
     // Total number of rows
@@ -72,6 +66,15 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         } else {
             return mData.size();
         }
+    }
+
+    private void setImageView(ViewHolder viewHolder, int position) {
+        String urlThumbOriginal = mData.get(position).getThumbs().getOriginal();
+        //Log.d(TAG, urlThumbOriginal);
+        final ImageRequest imageRequest =
+                ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
+                        .build();
+        viewHolder.mSimpleDraweeView.setImageRequest(imageRequest);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
