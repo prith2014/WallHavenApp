@@ -42,9 +42,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private int selectedWallpaperPosition;
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
-    private Boolean wallpaperLoading;
-    private WallhavenAPI wallhavenAPI;
-    RetrofitServer retrofitServer;
+    private RetrofitServer retrofitServer;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -79,10 +77,7 @@ public class SelectedWallpaperFragment extends Fragment {
         Log.d(TAG, "ID = " + selectedWallpaperID);
 
         retrofitServer = new RetrofitServer();
-
-        wallhavenAPI = retrofitServer.getRetrofitInstance().create(WallhavenAPI.class);
-
-        getWallpaperData();
+        getWallpaperData(retrofitServer.getSelectedWallpaper(selectedWallpaperID));
     }
 
     @Override
@@ -96,12 +91,8 @@ public class SelectedWallpaperFragment extends Fragment {
         return selectedWallpaperView;
     }
 
-    private void getWallpaperData() {
-        setWallpaperLoading(true);
-
-        Call<Wallpaper> retroCall = wallhavenAPI.getWallpaper(selectedWallpaperID);
-
-        retroCall.enqueue(new Callback<Wallpaper>() {
+    private void getWallpaperData(Call<Wallpaper> call) {
+        call.enqueue(new Callback<Wallpaper>() {
             @Override
             public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
                 if (response.isSuccessful()) {
@@ -110,7 +101,7 @@ public class SelectedWallpaperFragment extends Fragment {
                     Data data = response.body().getData();
                     setImageView(data);
                 }
-                setWallpaperLoading(false);
+                retrofitServer.setIsWallpaperLoading(false);
             }
 
             @Override
@@ -118,10 +109,6 @@ public class SelectedWallpaperFragment extends Fragment {
                 Log.d("Error", t.getMessage());
             }
         });
-    }
-
-    private void setWallpaperLoading(boolean input) {
-        wallpaperLoading = input;
     }
 
     private void setImageView(Data wallpaper) {

@@ -2,6 +2,7 @@ package com.example.prithviv.wallhavenapp.HttpRequest;
 
 import android.util.Log;
 
+import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
 
 import retrofit2.Call;
@@ -68,6 +69,12 @@ public class RetrofitServer {
     public Call<WallpaperList> getSearchWallpapersCall(String searchQuery) {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getNextPageNumber());
+        return retroCall;
+    }
+
+    public Call<Wallpaper> getSelectedWallpaper(String selectedWallpaperID) {
+        setIsWallpaperLoading(true);
+        Call<Wallpaper> retroCall = wallhavenAPI.getWallpaper(selectedWallpaperID);
         return retroCall;
     }
 
