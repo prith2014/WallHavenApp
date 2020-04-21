@@ -15,10 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
-import com.example.prithviv.wallhavenapp.activities.MainActivity;
 import com.example.prithviv.wallhavenapp.fragments.SelectedWallpaperFragment;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -56,6 +56,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         setImageView(viewHolder, position);
+        viewHolder.textViewResolution.setText(mData.get(position).getResolution());
     }
 
     // Total number of rows
@@ -80,12 +81,15 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final Random sRandom = new Random();
         private SimpleDraweeView mSimpleDraweeView;
+        private TextView textViewResolution;
 
         ViewHolder(View itemView) {
             super(itemView);
             mSimpleDraweeView = itemView.findViewById(R.id.my_image_view);
             mSimpleDraweeView.getHierarchy().setPlaceholderImage(new ColorDrawable(sRandom.nextInt()));
             itemView.setOnClickListener(this);
+
+            textViewResolution = itemView.findViewById(R.id.text_view_resolution);
         }
 
         @Override

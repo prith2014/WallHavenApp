@@ -16,10 +16,25 @@
         card_view:cardCornerRadius="4dp"
         app:elevation="2dp">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/my_image_view"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/my_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/text_view_resolution"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:background="#99000000"
+                android:textSize="18sp" />
+        </FrameLayout>
+
     </androidx.cardview.widget.CardView>
 
 
