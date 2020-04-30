@@ -74,7 +74,6 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         //Log.d(TAG, urlThumbOriginal);
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
-                        .setProgressiveRenderingEnabled(true)
                         .build();
         viewHolder.mSimpleDraweeView.setImageRequest(imageRequest);
     }
