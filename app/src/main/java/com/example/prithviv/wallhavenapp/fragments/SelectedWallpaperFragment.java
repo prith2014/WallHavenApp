@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -43,6 +45,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private SimpleDraweeView mSimpleDraweeView;
     private RetrofitServer retrofitServer;
     private Data selectedWallpaperData;
+    private ImageButton imageDownloadButton;
 
     public SelectedWallpaperFragment() {
         // Required empty public constructor
@@ -86,6 +89,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
         View selectedWallpaperView = inflater.inflate(R.layout.fragment_selected_wallpaper, container, false);
         mSimpleDraweeView = selectedWallpaperView.findViewById(R.id.selected_wallpaper_view);
+        imageDownloadButton = selectedWallpaperView.findViewById(R.id.image_download_button);
 
         // Inflate the layout for this fragment
         return selectedWallpaperView;
@@ -117,6 +121,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
+                        .setProgressiveRenderingEnabled(true)
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
 
