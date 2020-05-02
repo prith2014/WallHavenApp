@@ -121,7 +121,6 @@ public class SelectedWallpaperFragment extends Fragment {
 
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
-                        .setProgressiveRenderingEnabled(true)
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
 
