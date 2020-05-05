@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,6 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.util.List;
 import java.util.Random;
-
-import static android.content.ContentValues.TAG;
 
 public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.ViewHolder> {
 
@@ -104,7 +101,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         }
 
         private void launchSelectedWallpaperFragment(Data selectedWallpaper, Context context) {
-            Fragment selectedWallpaperFragment = new SelectedWallpaperFragment();
+            Fragment selectedWallpaperFragment = new SelectedWallpaperFragment(mContextProvider);
 
             Bundle args = new Bundle();
             args.putInt(SelectedWallpaperFragment.ARG_POSITION, getAdapterPosition());

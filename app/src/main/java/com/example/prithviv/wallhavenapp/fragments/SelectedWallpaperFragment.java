@@ -1,24 +1,27 @@
 package com.example.prithviv.wallhavenapp.fragments;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
+import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import retrofit2.Call;
@@ -40,15 +43,19 @@ public class SelectedWallpaperFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private final ContextProvider contextProvider;
+
     private int selectedWallpaperPosition;
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
     private RetrofitServer retrofitServer;
     private Data selectedWallpaperData;
-    private ImageButton imageDownloadButton;
+    private DownloadManager downloadManager;
 
-    public SelectedWallpaperFragment() {
+    public SelectedWallpaperFragment(ContextProvider contextProvider) {
         // Required empty public constructor
+        this.contextProvider = contextProvider;
+        this.downloadManager = (DownloadManager) contextProvider.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     /**
@@ -60,8 +67,8 @@ public class SelectedWallpaperFragment extends Fragment {
      * @return A new instance of fragment SelectedWallpaperFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SelectedWallpaperFragment newInstance(String param1, String param2) {
-        SelectedWallpaperFragment fragment = new SelectedWallpaperFragment();
+    public static SelectedWallpaperFragment newInstance(String param1, String param2, ContextProvider mContextProvider) {
+        SelectedWallpaperFragment fragment = new SelectedWallpaperFragment(mContextProvider);
         Bundle args = new Bundle();
         //args.putInt(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
@@ -89,7 +96,15 @@ public class SelectedWallpaperFragment extends Fragment {
 
         View selectedWallpaperView = inflater.inflate(R.layout.fragment_selected_wallpaper, container, false);
         mSimpleDraweeView = selectedWallpaperView.findViewById(R.id.selected_wallpaper_view);
-        imageDownloadButton = selectedWallpaperView.findViewById(R.id.image_download_button);
+
+        FloatingActionButton downloadFloatingActionButton = selectedWallpaperView.findViewById(R.id.download_floatingActionButton);
+        downloadFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("DOWNLOAD", "Download button clicked");
+                downloadWallpaper(selectedWallpaperData.getPath());
+            }
+        });
 
         // Inflate the layout for this fragment
         return selectedWallpaperView;
@@ -124,5 +139,19 @@ public class SelectedWallpaperFragment extends Fragment {
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
 
+    }
+
+    private void downloadWallpaper(String url) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+        request.setTitle("Wallpaper " + selectedWallpaperID);
+        request.setDescription("Downloading");
+        request.allowScanningByMediaScanner();
+        request.setMimeType(selectedWallpaperData.getFileType());
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, selectedWallpaperID);
+
+        downloadManager.enqueue(request);
+        Log.v("DOWNLOAD", "Download request enqueued");
     }
 }
