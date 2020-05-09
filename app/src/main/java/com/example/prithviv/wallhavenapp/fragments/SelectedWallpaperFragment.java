@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
@@ -23,6 +24,8 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +54,12 @@ public class SelectedWallpaperFragment extends Fragment {
     private RetrofitServer retrofitServer;
     private Data selectedWallpaperData;
     private DownloadManager downloadManager;
+
+    private TextView textViewCategory;
+    private TextView textViewResolution;
+    private TextView textViewSize;
+    private TextView textViewViews;
+    private TextView textViewRating;
 
     public SelectedWallpaperFragment(ContextProvider contextProvider) {
         // Required empty public constructor
@@ -106,6 +115,12 @@ public class SelectedWallpaperFragment extends Fragment {
             }
         });
 
+        textViewCategory = selectedWallpaperView.findViewById(R.id.text_view_category);
+        textViewResolution = selectedWallpaperView.findViewById(R.id.text_view_resolution);
+        textViewSize = selectedWallpaperView.findViewById(R.id.text_view_size);
+        textViewViews = selectedWallpaperView.findViewById(R.id.text_view_views);
+        textViewRating = selectedWallpaperView.findViewById(R.id.text_view_purity);
+
         // Inflate the layout for this fragment
         return selectedWallpaperView;
     }
@@ -120,6 +135,7 @@ public class SelectedWallpaperFragment extends Fragment {
 
                     selectedWallpaperData = response.body().getData();
                     setImageView(selectedWallpaperData);
+                    setImageDetails(selectedWallpaperData);
                 }
                 retrofitServer.setIsWallpaperLoading(false);
             }
@@ -138,7 +154,15 @@ public class SelectedWallpaperFragment extends Fragment {
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(pathURL))
                         .build();
         mSimpleDraweeView.setImageRequest(imageRequest);
+        mSimpleDraweeView.setAspectRatio(Float.parseFloat(selectedWallpaperData.getRatio()));
+    }
 
+    private void setImageDetails(Data wallpaper) {
+        textViewCategory.setText(wallpaper.getCategory());
+        textViewResolution.setText(wallpaper.getResolution());
+        textViewSize.setText(String.format(Locale.getDefault(), "%d", wallpaper.getFileSize()));
+        textViewViews.setText(String.format(Locale.getDefault(), "%d", wallpaper.getViews()));
+        textViewRating.setText(wallpaper.getPurity());
     }
 
     private void downloadWallpaper(String url) {
