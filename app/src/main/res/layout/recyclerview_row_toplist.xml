@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center"
-                android:background="@color/colorBackground"
+                android:background="@color/colorBackgroundTransparent"
                 android:textColor="@color/colorOnBackground"
                 android:textSize="18sp" />
         </FrameLayout>

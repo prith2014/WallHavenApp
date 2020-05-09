@@ -13,4 +13,6 @@
     <color name="colorOnSurface">#000000</color>
     <color name="colorOnError">#FFFFFF</color>
 
+    <color name="colorBackgroundTransparent">#66FFFFFF</color>
+
 </resources>
