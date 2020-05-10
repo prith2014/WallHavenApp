@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.widget.SearchView;
@@ -56,9 +57,9 @@ public class SearchFragment extends Fragment {
     private WallpapersAdapter mySearchWallpapersAdapter;
     private String searchQuery;
 
-    private ToggleButton generalToggle;
-    private ToggleButton animeToggle;
-    private ToggleButton peopleToggle;
+    private boolean generalToggleBoolean;
+    private boolean animeToggleBoolean;
+    private boolean peopleToggleBoolean;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -95,11 +96,14 @@ public class SearchFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(linearLayoutManager);
 
-
+        ToggleButton generalToggleView = searchView.findViewById(R.id.general_toggle_view);
+        ToggleButton animeToggleView = searchView.findViewById(R.id.anime_toggle_view);
+        ToggleButton peopleToggleView = searchView.findViewById(R.id.people_toggle_view);
 
         setRecyclerViewAdapter(searchWallpapersArrayList);
         setScrollListener(searchRecyclerView);
         setSearchBarView(searchBarView);
+        setCategoryTogglesViews(generalToggleView, animeToggleView, peopleToggleView);
 
         if (getArguments() != null) {
             searchQuery = getArguments().getString(SearchManager.QUERY);
@@ -162,7 +166,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("Search", "Search Query: " + newText);
+                //Log.d("Search", "Search Query: " + newText);
                 return false;
             }
         });
@@ -192,6 +196,45 @@ public class SearchFragment extends Fragment {
             @Override
             public void onFailure(Call<WallpaperList> call, Throwable t) {
                 Log.d("Error Toplist", t.getMessage());
+            }
+        });
+    }
+    
+    private void setCategoryTogglesViews(ToggleButton general, ToggleButton anime, ToggleButton people) {
+        general.setChecked(true);
+        anime.setChecked(true);
+        people.setChecked(true);
+
+        general.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    generalToggleBoolean = true;
+                } else {
+                    generalToggleBoolean = false;
+                }
+            }
+        });
+
+        anime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    animeToggleBoolean = true;
+                } else {
+                    animeToggleBoolean = false;
+                }
+            }
+        });
+
+        people.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    peopleToggleBoolean = true;
+                } else {
+                    peopleToggleBoolean = false;
+                }
             }
         });
     }

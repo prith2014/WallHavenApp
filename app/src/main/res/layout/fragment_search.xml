@@ -77,6 +77,7 @@
                     android:orientation="horizontal">
 
                     <ToggleButton
+                        android:id="@+id/general_toggle_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -84,6 +85,7 @@
                         android:textOff="@string/generalTitle"/>
 
                     <ToggleButton
+                        android:id="@+id/anime_toggle_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -91,6 +93,7 @@
                         android:textOff="@string/animeTitle"/>
 
                     <ToggleButton
+                        android:id="@+id/people_toggle_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

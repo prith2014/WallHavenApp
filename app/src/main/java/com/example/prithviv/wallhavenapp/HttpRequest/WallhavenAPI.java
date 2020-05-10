@@ -24,6 +24,9 @@ public interface WallhavenAPI {
     @GET("search")
     Call<WallpaperList> listSearchWallpapers(@Query("q") String query, @Query("page") int page);
 
+    @GET("search")
+    Call<WallpaperList> listSearchWallpapers(@Query("q") String query, @Query("categories") int category, @Query("page") int page);
+
     @GET("w/{wallpaperID}")
     Call<Wallpaper> getWallpaper(@Path("wallpaperID") String wallpaperID);
 }
