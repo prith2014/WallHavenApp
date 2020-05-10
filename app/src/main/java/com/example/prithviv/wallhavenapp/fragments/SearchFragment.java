@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ToggleButton;
+
 import androidx.appcompat.widget.SearchView;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
@@ -44,7 +46,6 @@ import retrofit2.Response;
 public class SearchFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    public SearchView searchView;
     private List<Data> searchWallpapersArrayList;
     private Meta searchWallpaperMeta;
     private Handler handler;
@@ -55,6 +56,9 @@ public class SearchFragment extends Fragment {
     private WallpapersAdapter mySearchWallpapersAdapter;
     private String searchQuery;
 
+    private ToggleButton generalToggle;
+    private ToggleButton animeToggle;
+    private ToggleButton peopleToggle;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -91,30 +95,11 @@ public class SearchFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(linearLayoutManager);
 
+
+
         setRecyclerViewAdapter(searchWallpapersArrayList);
         setScrollListener(searchRecyclerView);
-
-        searchBarView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.d("Search", "Search Query Submitted: " + query);
-                searchQuery = query;
-
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.putExtra(SearchManager.QUERY, query);
-                intent.setAction(Intent.ACTION_SEARCH);
-                searchBarView.clearFocus();
-                startActivity(intent);
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.d("Search", "Search Query: " + newText);
-                return false;
-            }
-        });
+        setSearchBarView(searchBarView);
 
         if (getArguments() != null) {
             searchQuery = getArguments().getString(SearchManager.QUERY);
@@ -155,6 +140,30 @@ public class SearchFragment extends Fragment {
                     //Five Items before end of list
                     getSearchWallpapers(retrofitServer.getSearchWallpapersCall(searchQuery));
                 }
+            }
+        });
+    }
+
+    private void setSearchBarView(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Search", "Search Query Submitted: " + query);
+                searchQuery = query;
+
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra(SearchManager.QUERY, query);
+                intent.setAction(Intent.ACTION_SEARCH);
+                searchBarView.clearFocus();
+                startActivity(intent);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("Search", "Search Query: " + newText);
+                return false;
             }
         });
     }

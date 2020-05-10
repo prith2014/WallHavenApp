@@ -57,6 +57,50 @@
             android:layout_width="match_parent"
             android:layout_height="400dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/searchSettingsTitle"
+                    android:textSize="28sp"
+                    android:fontFamily="sans-serif"
+                    android:textAlignment="center"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOn="@string/generalTitle"
+                        android:textOff="@string/generalTitle"/>
+
+                    <ToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOn="@string/animeTitle"
+                        android:textOff="@string/animeTitle"/>
+
+                    <ToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textOn="@string/peopleTitle"
+                        android:textOff="@string/peopleTitle"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </androidx.cardview.widget.CardView>
     </FrameLayout>
 

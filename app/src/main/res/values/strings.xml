@@ -16,4 +16,9 @@
     <string name="purityTitle">Purity</string>
     <string name="tagsTitle">Tags</string>
 
+    <string name="searchSettingsTitle">Search Settings</string>
+    <string name="generalTitle">General</string>
+    <string name="animeTitle">Anime</string>
+    <string name="peopleTitle">People</string>
+
 </resources>
