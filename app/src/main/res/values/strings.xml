@@ -3,9 +3,9 @@
     <string name="title_latest">Latest</string>
     <string name="title_toplist">Toplist</string>
     <string name="title_search">Search</string>
+    <string name="title_settings">Settings</string>
     <string name="search_hint">Search…</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selected_wallpaper_fragment">Selected Wallpaper Fragment</string>
     <string name="search">Search</string>
 
@@ -20,5 +20,8 @@
     <string name="generalTitle">General</string>
     <string name="animeTitle">Anime</string>
     <string name="peopleTitle">People</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
