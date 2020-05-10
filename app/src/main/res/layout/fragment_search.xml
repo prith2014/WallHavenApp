@@ -46,4 +46,18 @@
         android:layout_gravity="bottom"
         android:scrollbars="vertical" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="50dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
