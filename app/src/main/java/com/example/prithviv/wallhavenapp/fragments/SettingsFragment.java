@@ -1,5 +1,6 @@
 package com.example.prithviv.wallhavenapp.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import com.example.prithviv.wallhavenapp.R;
 
@@ -60,6 +63,37 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View settingsFragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        ToggleButton generalToggleButton = settingsFragmentView.findViewById(R.id.general_toggle_view);
+        ToggleButton animeToggleButton = settingsFragmentView.findViewById(R.id.anime_toggle_view);
+        ToggleButton peopleToggleButton = settingsFragmentView.findViewById(R.id.people_toggle_view);
+
+        setupToggleButtons(generalToggleButton, animeToggleButton, peopleToggleButton);
+
+        return settingsFragmentView;
+    }
+
+    private void setupToggleButtons(ToggleButton general, ToggleButton anime, ToggleButton people) {
+        general.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
+
+        anime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
+
+        people.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
     }
 }

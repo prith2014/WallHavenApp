@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity
     public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
     public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
 
-
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentToplist = new ToplistFragment();
     Fragment fragmentSearch = new SearchFragment();

@@ -1,50 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.SettingsFragment">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_settings"
+        android:textAlignment="center"
+        android:textSize="24sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ToggleButton
+            android:id="@+id/general_toggle_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_settings"
-            android:textAlignment="center"
-            android:textSize="24sp"/>
+            android:layout_weight="1"
+            android:textOn="@string/generalTitle"
+            android:textOff="@string/generalTitle"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ToggleButton
+            android:id="@+id/anime_toggle_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:textOn="@string/animeTitle"
+            android:textOff="@string/animeTitle"/>
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textOn="@string/generalTitle"
-                android:textOff="@string/generalTitle"/>
-
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textOn="@string/animeTitle"
-                android:textOff="@string/animeTitle"/>
-
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textOn="@string/peopleTitle"
-                android:textOff="@string/peopleTitle"/>
-
-        </LinearLayout>
+        <ToggleButton
+            android:id="@+id/people_toggle_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOn="@string/peopleTitle"
+            android:textOff="@string/peopleTitle"/>
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
