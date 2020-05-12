@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
@@ -100,7 +102,8 @@ public class RetrofitServer {
     }
 
     private String getUserSetCategories() {
-        SharedPreferences sharedPreferences = contextProvider.getContext().getSharedPreferences("com.example.wallhavenapp", Context.MODE_PRIVATE);
+        //SharedPreferences sharedPreferences = contextProvider.getContext().getSharedPreferences("com.example.wallhavenapp", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(contextProvider.getContext());
         boolean general = sharedPreferences.getBoolean(GENERAL_CATEGORY, true);
         boolean anime = sharedPreferences.getBoolean(ANIME_CATEGORY, true);
         boolean people = sharedPreferences.getBoolean(PEOPLE_CATEGORY, true);
@@ -109,6 +112,8 @@ public class RetrofitServer {
         sb.append(general ? "1" : "0");
         sb.append(anime ? "1" : "0");
         sb.append(people ? "1" : "0");
+
+        Log.d("Categories", sb.toString());
 
         return sb.toString();
     }
