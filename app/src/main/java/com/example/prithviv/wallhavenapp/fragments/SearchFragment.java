@@ -76,7 +76,12 @@ public class SearchFragment extends Fragment {
         searchWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer();
+        retrofitServer = new RetrofitServer(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        });
     }
 
     @Override

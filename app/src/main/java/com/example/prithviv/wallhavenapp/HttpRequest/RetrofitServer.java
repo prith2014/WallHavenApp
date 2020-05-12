@@ -1,7 +1,10 @@
 package com.example.prithviv.wallhavenapp.HttpRequest;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
 
@@ -24,18 +27,24 @@ then a WallpaperService, which is a class, which implements that Facade, and whi
  */
 public class RetrofitServer {
     private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
+    private final String GENERAL_CATEGORY = "com.example.wallhavenapp.generalcategory";
+    private final String ANIME_CATEGORY = "com.example.wallhavenapp.animecategory";
+    private final String PEOPLE_CATEGORY = "com.example.wallhavenapp.peoplecategory";
+
     private Retrofit retrofit;
     private WallhavenAPI wallhavenAPI;
     private boolean isWallpaperLoading;
     private int pageNumber;
+    ContextProvider contextProvider;
 
-    public RetrofitServer() {
+    public RetrofitServer(ContextProvider contextProvider) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(WALLHAVEN_API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         wallhavenAPI = retrofit.create(WallhavenAPI.class);
+        this.contextProvider = contextProvider;
 
         isWallpaperLoading = false;
         pageNumber = 0;
@@ -61,7 +70,7 @@ public class RetrofitServer {
 
     public Call<WallpaperList> getToplistWallpapersCall() {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(110,
+        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(getUserSetCategories(),
                 100, "1M", "toplist", "desc", getNextPageNumber());
         return retroCall;
     }
@@ -88,5 +97,19 @@ public class RetrofitServer {
         pageNumber++;
         //Log.d("Page", Integer.toString(pageNumber));
         return pageNumber;
+    }
+
+    private String getUserSetCategories() {
+        SharedPreferences sharedPreferences = contextProvider.getContext().getSharedPreferences("com.example.wallhavenapp", Context.MODE_PRIVATE);
+        boolean general = sharedPreferences.getBoolean(GENERAL_CATEGORY, true);
+        boolean anime = sharedPreferences.getBoolean(ANIME_CATEGORY, true);
+        boolean people = sharedPreferences.getBoolean(PEOPLE_CATEGORY, true);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(general ? "1" : "0");
+        sb.append(anime ? "1" : "0");
+        sb.append(people ? "1" : "0");
+
+        return sb.toString();
     }
 }

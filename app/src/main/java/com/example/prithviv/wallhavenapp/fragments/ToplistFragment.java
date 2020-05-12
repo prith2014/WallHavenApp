@@ -92,7 +92,12 @@ public class ToplistFragment extends Fragment {
         topListWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer();
+        retrofitServer = new RetrofitServer(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        });
         getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 

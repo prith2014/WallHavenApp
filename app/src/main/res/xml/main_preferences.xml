@@ -2,9 +2,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+
+    <PreferenceCategory
+        android:title="Categories"/>
+
     <androidx.preference.SwitchPreference
         android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="Turn this option on or off"
-        android:title="Settings option" />
+        android:key="com.example.wallhavenapp.generalcategory"
+        android:summary="Filter wallpapers in general category"
+        android:title="General" />
+
+    <androidx.preference.SwitchPreference
+        android:defaultValue="true"
+        android:key="com.example.wallhavenapp.animecategory"
+        android:summary="Filter wallpapers in anime category"
+        android:title="Anime" />
+
+    <androidx.preference.SwitchPreference
+        android:defaultValue="true"
+        android:key="com.example.wallhavenapp.peoplecategory"
+        android:summary="Filter wallpapers in people category"
+        android:title="People" />
+
 </PreferenceScreen>

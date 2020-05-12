@@ -98,7 +98,12 @@ public class SelectedWallpaperFragment extends Fragment {
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
 
-        retrofitServer = new RetrofitServer();
+        retrofitServer = new RetrofitServer(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        });
         getWallpaperData(retrofitServer.getSelectedWallpaper(selectedWallpaperID));
     }
 

@@ -14,7 +14,7 @@ public interface WallhavenAPI {
     Call<WallpaperList> listLatestWallpapers(@Query("page") int page);
 
     @GET("search")
-    Call<WallpaperList> listTopListWallpapers(@Query("categories") int category,
+    Call<WallpaperList> listTopListWallpapers(@Query("categories") String category,
             @Query("purity") int purity,
             @Query("topRange") String topRange,
             @Query("sorting") String sorting,
