@@ -37,7 +37,7 @@ public class RetrofitServer {
     private WallhavenAPI wallhavenAPI;
     private boolean isWallpaperLoading;
     private int pageNumber;
-    ContextProvider contextProvider;
+    private ContextProvider contextProvider;
 
     public RetrofitServer(ContextProvider contextProvider) {
         retrofit = new Retrofit.Builder()
