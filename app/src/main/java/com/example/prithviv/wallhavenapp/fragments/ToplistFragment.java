@@ -171,6 +171,9 @@ public class ToplistFragment extends Fragment {
         });
     }
 
+    // TODO: Does topListWallpapersArrayList have to be in Fragment?
+    // It should be in Retrofit class if possible. Maybe put wallpapersArrayList in Retrofit instance
+    // and set wallpapers to recycleview adapter using getter function.
     private void getToplistWallpapers(Call<WallpaperList> call) {
         call.enqueue(new Callback<WallpaperList>() {
             @Override
