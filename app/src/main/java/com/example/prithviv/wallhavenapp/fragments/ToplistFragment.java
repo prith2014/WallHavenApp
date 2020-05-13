@@ -22,6 +22,7 @@ import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,14 @@ public class ToplistFragment extends Fragment {
             public void onRefresh() {
                 refreshWallpapers();
                 swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        FloatingActionButton refreshFloatingActionButton = toplistView.findViewById(R.id.refresh_floatingActionButton);
+        refreshFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshWallpapers();
             }
         });
 
