@@ -80,13 +80,8 @@ public class RetrofitServer {
 
     public Call<WallpaperList> getSearchWallpapersCall(String searchQuery) {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getNextPageNumber());
-        return retroCall;
-    }
-
-    public Call<WallpaperList> getSearchWallpapersCall(String searchQuery, int category) {
-        setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, category, getNextPageNumber());
+        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getUserSetCategories(),
+                100, "relevance", "desc", getNextPageNumber());
         return retroCall;
     }
 
