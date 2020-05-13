@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.util.Log;
@@ -116,6 +117,15 @@ public class ToplistFragment extends Fragment {
         setRecyclerViewAdapter(topListWallpapersArrayList);
         setScrollListener(toplistRecyclerView);
 
+        SwipeRefreshLayout swipeRefreshLayout = toplistView.findViewById(R.id.swipe_refresh_toplist);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshWallpapers();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         return toplistView;
     }
 
@@ -178,6 +188,12 @@ public class ToplistFragment extends Fragment {
                 Log.d("Error Toplist", t.getMessage());
             }
         });
+    }
+
+    private void refreshWallpapers() {
+        topListWallpapersArrayList.clear();
+        retrofitServer.refreshPageNumber();
+        getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

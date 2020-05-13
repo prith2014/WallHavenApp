@@ -95,6 +95,10 @@ public class RetrofitServer {
         return retroCall;
     }
 
+    public void refreshPageNumber() {
+        pageNumber = 0;
+    }
+
     private int getNextPageNumber() {
         pageNumber++;
         //Log.d("Page", Integer.toString(pageNumber));
