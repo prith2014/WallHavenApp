@@ -14,12 +14,19 @@ public interface WallhavenAPI {
     Call<WallpaperList> listLatestWallpapers(@Query("page") int page);
 
     @GET("search")
+    Call<WallpaperList> listLatestWallpapers(@Query("categories") String category,
+                                             @Query("purity") int purity,
+                                             @Query("sorting") String sorting,
+                                             @Query("order") String order,
+                                             @Query("page") int page);
+
+    @GET("search")
     Call<WallpaperList> listTopListWallpapers(@Query("categories") String category,
-            @Query("purity") int purity,
-            @Query("topRange") String topRange,
-            @Query("sorting") String sorting,
-            @Query("order") String order,
-            @Query("page") int page);
+                                            @Query("purity") int purity,
+                                            @Query("topRange") String topRange,
+                                            @Query("sorting") String sorting,
+                                            @Query("order") String order,
+                                            @Query("page") int page);
 
     @GET("search")
     Call<WallpaperList> listSearchWallpapers(@Query("q") String query, @Query("page") int page);

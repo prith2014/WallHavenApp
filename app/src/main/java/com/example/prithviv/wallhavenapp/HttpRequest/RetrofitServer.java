@@ -66,7 +66,8 @@ public class RetrofitServer {
 
     public Call<WallpaperList> getLatestWallpapersCall() {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getNextPageNumber());
+        Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getUserSetCategories(),
+                100, "date_added", "desc", getNextPageNumber());
         return retroCall;
     }
 
