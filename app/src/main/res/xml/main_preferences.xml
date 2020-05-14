@@ -8,20 +8,33 @@
 
     <androidx.preference.SwitchPreference
         android:defaultValue="true"
-        android:key="com.example.wallhavenapp.generalcategory"
-        android:summary="Filter wallpapers in general category"
-        android:title="General" />
+        android:key="@string/GENERAL_CATEGORY_TAG"
+        android:summary="@string/generalCategoryDescription"
+        android:title="@string/generalTitle" />
 
     <androidx.preference.SwitchPreference
         android:defaultValue="true"
-        android:key="com.example.wallhavenapp.animecategory"
-        android:summary="Filter wallpapers in anime category"
-        android:title="Anime" />
+        android:key="@string/ANIME_CATEGORY_TAG"
+        android:summary="@string/animeCategoryDescription"
+        android:title="@string/animeTitle" />
 
     <androidx.preference.SwitchPreference
         android:defaultValue="true"
-        android:key="com.example.wallhavenapp.peoplecategory"
-        android:summary="Filter wallpapers in people category"
-        android:title="People" />
+        android:key="@string/PEOPLE_CATEGORY_TAG"
+        android:summary="@string/peopleCategoryDescription"
+        android:title="@string/peopleTitle" />
+
+    <PreferenceCategory
+        android:title="Purity"/>
+
+    <androidx.preference.SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/SFW_PURITY_TAG"
+        android:title="@string/sfwTitle" />
+
+    <androidx.preference.SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/SKETCHY_PURITY_TAG"
+        android:title="@string/sketchyTitle" />
 
 </PreferenceScreen>

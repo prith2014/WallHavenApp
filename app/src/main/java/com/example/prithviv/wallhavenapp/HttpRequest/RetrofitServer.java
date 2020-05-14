@@ -29,9 +29,12 @@ then a WallpaperService, which is a class, which implements that Facade, and whi
  */
 public class RetrofitServer {
     private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
-    private final String GENERAL_CATEGORY = "com.example.wallhavenapp.generalcategory";
-    private final String ANIME_CATEGORY = "com.example.wallhavenapp.animecategory";
-    private final String PEOPLE_CATEGORY = "com.example.wallhavenapp.peoplecategory";
+    private static final String GENERAL_CATEGORY = "com.example.wallhavenapp.generalcategory";
+    private static final String ANIME_CATEGORY = "com.example.wallhavenapp.animecategory";
+    private static final String PEOPLE_CATEGORY = "com.example.wallhavenapp.peoplecategory";
+    private static final String SFW_PURITY = "com.example.wallhavenapp.sfwpurity";
+    private static final String SKETCHY_PURITY = "com.example.wallhavenapp.sketchypurity";
+    private static final String NSFW_PURITY = "com.example.wallhavenapp.nsfwpurity";
 
     private Retrofit retrofit;
     private WallhavenAPI wallhavenAPI;
@@ -67,21 +70,21 @@ public class RetrofitServer {
     public Call<WallpaperList> getLatestWallpapersCall() {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getUserSetCategories(),
-                100, "date_added", "desc", getNextPageNumber());
+                getUserSetPurity(), "date_added", "desc", getNextPageNumber());
         return retroCall;
     }
 
     public Call<WallpaperList> getToplistWallpapersCall() {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(getUserSetCategories(),
-                100, "1M", "toplist", "desc", getNextPageNumber());
+                getUserSetPurity(), "1M", "toplist", "desc", getNextPageNumber());
         return retroCall;
     }
 
     public Call<WallpaperList> getSearchWallpapersCall(String searchQuery) {
         setIsWallpaperLoading(true);
         Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getUserSetCategories(),
-                100, "relevance", "desc", getNextPageNumber());
+                getUserSetPurity(), "relevance", "desc", getNextPageNumber());
         return retroCall;
     }
 
@@ -112,8 +115,21 @@ public class RetrofitServer {
         sb.append(general ? "1" : "0");
         sb.append(anime ? "1" : "0");
         sb.append(people ? "1" : "0");
+        //Log.d("Categories", sb.toString());
 
-        Log.d("Categories", sb.toString());
+        return sb.toString();
+    }
+
+    private String getUserSetPurity() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(contextProvider.getContext());
+        boolean sfw = sharedPreferences.getBoolean(SFW_PURITY, true);
+        boolean sketchy = sharedPreferences.getBoolean(SKETCHY_PURITY, false);
+        boolean nsfw = sharedPreferences.getBoolean(NSFW_PURITY, false);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(sfw ? "1" : "0");
+        sb.append(sketchy ? "1" : "0");
+        sb.append(nsfw ? "1" : "0");
 
         return sb.toString();
     }

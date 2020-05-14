@@ -20,8 +20,17 @@
     <string name="generalTitle">General</string>
     <string name="animeTitle">Anime</string>
     <string name="peopleTitle">People</string>
+    <string name="sfwTitle">SFW</string>
+    <string name="sketchyTitle">Sketchy</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="generalCategoryDescription">Filter wallpapers in general category</string>
+    <string name="animeCategoryDescription">Filter wallpapers in anime category</string>
+    <string name="peopleCategoryDescription">Filter wallpapers in people category</string>
+
+    <string name="GENERAL_CATEGORY_TAG">com.example.wallhavenapp.generalcategory</string>
+    <string name="ANIME_CATEGORY_TAG">com.example.wallhavenapp.animecategory</string>
+    <string name="PEOPLE_CATEGORY_TAG">com.example.wallhavenapp.peoplecategory</string>
+    <string name="SFW_PURITY_TAG">com.example.wallhavenapp.sfwpurity</string>
+    <string name="SKETCHY_PURITY_TAG">com.example.wallhavenapp.sketchypurity</string>
 
 </resources>
