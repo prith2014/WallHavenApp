@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
 import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Meta;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +74,12 @@ public class LatestFragment extends Fragment {
         latestWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer();
+        retrofitServer = new RetrofitServer(new ContextProvider() {
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        });
         getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
     }
 
@@ -91,6 +98,23 @@ public class LatestFragment extends Fragment {
 
         setRecyclerViewAdapter(latestWallpapersArrayList);
         setScrollListener(latestRecyclerView);
+
+        SwipeRefreshLayout swipeRefreshLayout = latestView.findViewById(R.id.swipe_refresh_latest);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshWallpapers();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        FloatingActionButton refreshFloatingActionButton = latestView.findViewById(R.id.refresh_floatingActionButton);
+        refreshFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshWallpapers();
+            }
+        });
 
         return latestView;
     }
@@ -157,6 +181,12 @@ public class LatestFragment extends Fragment {
                 Log.d("Error", t.getMessage());
             }
         });
+    }
+
+    private void refreshWallpapers() {
+        latestWallpapersArrayList.clear();
+        retrofitServer.refreshPageNumber();
+        getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.LatestFragment;
 import com.example.prithviv.wallhavenapp.fragments.SearchFragment;
+import com.example.prithviv.wallhavenapp.fragments.SettingsFragment;
 import com.example.prithviv.wallhavenapp.fragments.ToplistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -32,10 +33,10 @@ public class MainActivity extends AppCompatActivity
     public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
     public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
 
-
     final Fragment fragmentLatest = new LatestFragment();
     final Fragment fragmentToplist = new ToplistFragment();
     Fragment fragmentSearch = new SearchFragment();
+    final Fragment fragmentSettings = new SettingsFragment();
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     Fragment active = fragmentLatest;
@@ -58,6 +59,10 @@ public class MainActivity extends AppCompatActivity
                     fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
                     active = fragmentToplist;
                     return true;
+                case R.id.navigation_settings:
+                    fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
+                    active = fragmentSettings;
+                    return true;
             }
             return false;
         }
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Fragments
+        fragmentManager.beginTransaction().add(R.id.main_container, fragmentSettings, "fragSettings").hide(fragmentSettings).commit();
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentSearch, "fragSearch").hide(fragmentSearch).commit();
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentToplist, TOPLIST_FRAGMENT_TAG).hide(fragmentToplist).commit();
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentLatest, LATEST_FRAGMENT_TAG).commit();
