@@ -3,19 +3,18 @@ package com.example.prithviv.wallhavenapp.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.prithviv.wallhavenapp.ContextProvider;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
@@ -39,17 +38,6 @@ import static android.content.ContentValues.TAG;
  * create an instance of this fragment.
  */
 public class ToplistFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
-
     private OnFragmentInteractionListener mListener;
     private RecyclerView toplistRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -69,16 +57,12 @@ public class ToplistFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ToplistFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ToplistFragment newInstance(String param1, String param2) {
+    public static ToplistFragment newInstance() {
         ToplistFragment fragment = new ToplistFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,20 +70,10 @@ public class ToplistFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
         topListWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-            }
-        });
+        retrofitServer = new RetrofitServer(this::getActivity);
         getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
@@ -119,33 +93,20 @@ public class ToplistFragment extends Fragment {
         setScrollListener(toplistRecyclerView);
 
         SwipeRefreshLayout swipeRefreshLayout = toplistView.findViewById(R.id.swipe_refresh_toplist);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshWallpapers();
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshWallpapers();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         FloatingActionButton refreshFloatingActionButton = toplistView.findViewById(R.id.refresh_floatingActionButton);
-        refreshFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshWallpapers();
-            }
-        });
+        refreshFloatingActionButton.setOnClickListener(v -> refreshWallpapers());
 
         return toplistView;
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        myToplistWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-                //return MyActivity.this;       // For activities
-            }
-        }, wallpapers);
+        //return MyActivity.this;       // For activities
+        myToplistWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
 
         toplistRecyclerView.setAdapter(myToplistWallpapersAdapter);
     }
@@ -154,7 +115,7 @@ public class ToplistFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (retrofitServer.isWallpaperLoading())
                     return;
 
@@ -179,7 +140,7 @@ public class ToplistFragment extends Fragment {
     private void getToplistWallpapers(Call<WallpaperList> call) {
         call.enqueue(new Callback<WallpaperList>() {
             @Override
-            public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
+            public void onResponse(@NonNull Call<WallpaperList> call, @NonNull Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
@@ -188,18 +149,15 @@ public class ToplistFragment extends Fragment {
                     wallpaperList.parseResponse(topListWallpapersArrayList);
                     topListWallpapersMeta = wallpaperList.getMeta();
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            myToplistWallpapersAdapter.notifyDataSetChanged();
-                        }
-                    });
+                    handler.post(() -> myToplistWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override
-            public void onFailure(Call<WallpaperList> call, Throwable t) {
-                Log.d("Error Toplist", t.getMessage());
+            public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
+                if (t.getMessage() != null) {
+                    Log.d("Error Toplist", t.getMessage());
+                }
             }
         });
     }
@@ -210,15 +168,8 @@ public class ToplistFragment extends Fragment {
         getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;

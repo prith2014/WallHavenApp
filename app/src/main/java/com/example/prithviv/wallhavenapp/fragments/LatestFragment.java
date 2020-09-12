@@ -3,18 +3,18 @@ package com.example.prithviv.wallhavenapp.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.prithviv.wallhavenapp.ContextProvider;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.adapters.WallpapersAdapter;
@@ -39,18 +39,10 @@ import retrofit2.Callback;
  * create an instance of this fragment.
  */
 public class LatestFragment extends Fragment {
-    // Top List URL does not give the uploaders or tags of each wallpaper
-    private static final String WALLHAVEN_API_URL = "https://wallhaven.cc/api/v1/";
-    private static final String LATEST_WALLPAPER_GET_REQUEST_URL = "https://wallhaven.cc/api/v1/search";
-    // Page 2: "https://wallhaven.cc/api/v1/search?page=2"
-
-    public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
-
     private OnFragmentInteractionListener mListener;
     private RecyclerView latestRecyclerView;
     private WallpapersAdapter myWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private WallpaperList wallpaperList;
     private Meta latestWallpapersMeta;
     private List<Data> latestWallpapersArrayList;
     private Handler handler;
@@ -59,7 +51,6 @@ public class LatestFragment extends Fragment {
     public LatestFragment() {
         // Required empty public constructor
     }
-
 
     public static LatestFragment newInstance(String param1, String param2) {
         LatestFragment fragment = new LatestFragment();
@@ -74,12 +65,7 @@ public class LatestFragment extends Fragment {
         latestWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-            }
-        });
+        retrofitServer = new RetrofitServer(this::getActivity);
         getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
     }
 
@@ -100,33 +86,20 @@ public class LatestFragment extends Fragment {
         setScrollListener(latestRecyclerView);
 
         SwipeRefreshLayout swipeRefreshLayout = latestView.findViewById(R.id.swipe_refresh_latest);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshWallpapers();
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshWallpapers();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         FloatingActionButton refreshFloatingActionButton = latestView.findViewById(R.id.refresh_floatingActionButton);
-        refreshFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshWallpapers();
-            }
-        });
+        refreshFloatingActionButton.setOnClickListener(v -> refreshWallpapers());
 
         return latestView;
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        myWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-                //return MyActivity.this;       // For activities
-            }
-        }, wallpapers);
+        //return MyActivity.this;       // For activities
+        myWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
 
         latestRecyclerView.setAdapter(myWallpapersAdapter);
     }
@@ -135,7 +108,7 @@ public class LatestFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (retrofitServer.isWallpaperLoading())
                     return;
 
@@ -155,7 +128,7 @@ public class LatestFragment extends Fragment {
     private void getLatestWallpapers(Call<WallpaperList> call) {
         call.enqueue(new Callback<WallpaperList>() {
             @Override
-            public void onResponse(Call<WallpaperList> call, retrofit2.Response<WallpaperList> response) {
+            public void onResponse(@NonNull Call<WallpaperList> call, @NonNull retrofit2.Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     //Log.d("JSON", response.toString());
                     WallpaperList wallpaperList = response.body();
@@ -166,19 +139,16 @@ public class LatestFragment extends Fragment {
                     latestWallpapersMeta = wallpaperList.getMeta();
                     //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            myWallpapersAdapter.notifyDataSetChanged();
-                        }
-                    });
+                    handler.post(() -> myWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
 
             @Override
-            public void onFailure(Call<WallpaperList> call, Throwable t) {
-                Log.d("Error", t.getMessage());
+            public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
+                if (t.getMessage() != null) {
+                    Log.d("Error", t.getMessage());
+                }
             }
         });
     }
@@ -189,15 +159,8 @@ public class LatestFragment extends Fragment {
         getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;

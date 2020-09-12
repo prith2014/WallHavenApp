@@ -1,23 +1,11 @@
 package com.example.prithviv.wallhavenapp.fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 
-import android.preference.PreferenceFragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
-
-import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.R;
 
 

@@ -2,6 +2,7 @@ package com.example.prithviv.wallhavenapp.adapters;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -40,8 +41,9 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     }
 
     // Inflates row layout from xml when needed
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = mInflater.inflate(R.layout.recyclerview_row_toplist, viewGroup, false);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setOnClickListener(viewHolder);
@@ -51,7 +53,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
 
     // Binds the data to the SimpleDraweeView in each row
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         setImageView(viewHolder, position);
         viewHolder.textViewResolution.setText(mData.get(position).getResolution());
     }
@@ -68,7 +70,6 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
 
     private void setImageView(ViewHolder viewHolder, int position) {
         String urlThumbOriginal = mData.get(position).getThumbs().getOriginal();
-        //Log.d(TAG, urlThumbOriginal);
         final ImageRequest imageRequest =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(urlThumbOriginal))
                         .build();
@@ -76,13 +77,13 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final Random sRandom = new Random();
         private SimpleDraweeView mSimpleDraweeView;
         private TextView textViewResolution;
 
         ViewHolder(View itemView) {
             super(itemView);
             mSimpleDraweeView = itemView.findViewById(R.id.my_image_view);
+            Random sRandom = new Random();
             mSimpleDraweeView.getHierarchy().setPlaceholderImage(new ColorDrawable(sRandom.nextInt()));
             itemView.setOnClickListener(this);
 
@@ -91,10 +92,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
 
         @Override
         public void onClick(View view) {
-
-            //Log.d(TAG, "position = " + this.getAdapterPosition());
             Data selectedWallpaper = mData.get(getAdapterPosition());
-            //Log.d("Selected Wallpaper", selectedWallpaper.getUrl());
             Context context = mContextProvider.getContext();
 
             launchSelectedWallpaperFragment(selectedWallpaper, context);

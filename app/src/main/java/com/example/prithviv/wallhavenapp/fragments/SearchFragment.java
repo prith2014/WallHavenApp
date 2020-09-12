@@ -5,21 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.activities.MainActivity;
@@ -45,7 +42,6 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class SearchFragment extends Fragment {
-
     private OnFragmentInteractionListener mListener;
     private List<Data> searchWallpapersArrayList;
     private Meta searchWallpaperMeta;
@@ -76,12 +72,7 @@ public class SearchFragment extends Fragment {
         searchWallpapersArrayList = new ArrayList<>();
         handler = new Handler();
 
-        retrofitServer = new RetrofitServer(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-            }
-        });
+        retrofitServer = new RetrofitServer(this::getActivity);
     }
 
     @Override
@@ -112,13 +103,8 @@ public class SearchFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        mySearchWallpapersAdapter = new WallpapersAdapter(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-                //return MyActivity.this;       // For activities
-            }
-        }, wallpapers);
+        //return MyActivity.this;       // For activities
+        mySearchWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
 
         searchRecyclerView.setAdapter(mySearchWallpapersAdapter);
     }
@@ -127,7 +113,7 @@ public class SearchFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (retrofitServer.isWallpaperLoading())
                     return;
 
@@ -171,7 +157,7 @@ public class SearchFragment extends Fragment {
     private void getSearchWallpapers(Call<WallpaperList> call) {
         call.enqueue(new Callback<WallpaperList>() {
             @Override
-            public void onResponse(Call<WallpaperList> call, Response<WallpaperList> response) {
+            public void onResponse(@NonNull Call<WallpaperList> call, @NonNull Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
                     //Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
@@ -180,24 +166,21 @@ public class SearchFragment extends Fragment {
                     wallpaperList.parseResponse(searchWallpapersArrayList);
                     searchWallpaperMeta = wallpaperList.getMeta();
 
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mySearchWallpapersAdapter.notifyDataSetChanged();
-                        }
-                    });
+                    handler.post(() -> mySearchWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override
-            public void onFailure(Call<WallpaperList> call, Throwable t) {
-                Log.d("Error Toplist", t.getMessage());
+            public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
+                if (t.getMessage() != null) {
+                    Log.d("Error Toplist", t.getMessage());
+                }
             }
         });
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
