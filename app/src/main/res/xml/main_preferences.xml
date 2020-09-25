@@ -40,10 +40,4 @@
         android:key="@string/SKETCHY_PURITY_TAG"
         android:title="@string/sketchyTitle" />
 
-    <MultiSelectListPreference
-        app:allowDividerAbove="true"
-        android:title="Resolution"
-        android:summary="Select resolutions to filter"/>
-
-
 </PreferenceScreen>
