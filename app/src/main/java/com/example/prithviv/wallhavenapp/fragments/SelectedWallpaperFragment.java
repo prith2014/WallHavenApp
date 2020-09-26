@@ -4,16 +4,15 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
@@ -25,7 +24,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +57,6 @@ public class SelectedWallpaperFragment extends Fragment {
     private TextView textViewTags;
 
     public SelectedWallpaperFragment(ContextProvider contextProvider) {
-        // Required empty public constructor
         this.downloadManager = (DownloadManager) contextProvider.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
     }
 

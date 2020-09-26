@@ -41,7 +41,7 @@ import retrofit2.Callback;
 public class LatestFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView latestRecyclerView;
-    private WallpapersAdapter myWallpapersAdapter;
+    private WallpapersAdapter latestWallpapersAdapter;
     private LinearLayoutManager linearLayoutManager;
     private Meta latestWallpapersMeta;
     private List<Data> latestWallpapersArrayList;
@@ -52,7 +52,7 @@ public class LatestFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static LatestFragment newInstance(String param1, String param2) {
+    public static LatestFragment newInstance() {
         LatestFragment fragment = new LatestFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -72,12 +72,13 @@ public class LatestFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View latestView =  inflater.inflate(R.layout.fragment_latest, container, false);
+
         // RecyclerView
         latestRecyclerView = latestView.findViewById(R.id.my_recycler_view);
         latestRecyclerView.setHasFixedSize(true);
+
         // Linear layout manager
         linearLayoutManager = new LinearLayoutManager(getActivity());
         latestRecyclerView.setLayoutManager(linearLayoutManager);
@@ -98,10 +99,8 @@ public class LatestFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        //return MyActivity.this;       // For activities
-        myWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
-
-        latestRecyclerView.setAdapter(myWallpapersAdapter);
+        latestWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
+        latestRecyclerView.setAdapter(latestWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {
@@ -109,8 +108,9 @@ public class LatestFragment extends Fragment {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (retrofitServer.isWallpaperLoading())
+                if (retrofitServer.isWallpaperLoading()) {
                     return;
+                }
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
@@ -118,7 +118,7 @@ public class LatestFragment extends Fragment {
                 int fiveItemsBeforeEnd = totalItemCount - 5;
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
-                    //Five Items before end of list
+                    // Five Items before end of list
                     getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
                 }
             }
@@ -130,16 +130,13 @@ public class LatestFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<WallpaperList> call, @NonNull retrofit2.Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
-                    //Log.d("JSON", response.toString());
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
-                    //Log.d("JSON", wallpaper.getData().get(0).getUrl());
                     wallpaperList.parseResponse(latestWallpapersArrayList);
                     latestWallpapersMeta = wallpaperList.getMeta();
-                    //Log.d("JSON", latestWallpapersList.get(0).getUrl());
 
-                    handler.post(() -> myWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> latestWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
@@ -147,7 +144,7 @@ public class LatestFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
                 if (t.getMessage() != null) {
-                    Log.d("Error", t.getMessage());
+                    Log.e("LATEST", "GET request error: " + t.getMessage());
                 }
             }
         });

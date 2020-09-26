@@ -39,9 +39,9 @@ import static android.content.ContentValues.TAG;
  */
 public class ToplistFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private RecyclerView toplistRecyclerView;
+    private RecyclerView topListRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private WallpapersAdapter myToplistWallpapersAdapter;
+    private WallpapersAdapter topListWallpapersAdapter;
 
     private List<Data> topListWallpapersArrayList;
     private Meta topListWallpapersMeta;
@@ -74,41 +74,41 @@ public class ToplistFragment extends Fragment {
         handler = new Handler();
 
         retrofitServer = new RetrofitServer(this::getActivity);
-        getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
+        getTopListWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View toplistView =  inflater.inflate(R.layout.fragment_toplist, container, false);
+        View topListView =  inflater.inflate(R.layout.fragment_toplist, container, false);
+
         // Recycler view
-        toplistRecyclerView = toplistView.findViewById(R.id.toplist_recycler_view);
-        toplistRecyclerView.setHasFixedSize(true);
+        topListRecyclerView = topListView.findViewById(R.id.toplist_recycler_view);
+        topListRecyclerView.setHasFixedSize(true);
+
         // Linear layout manager
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        toplistRecyclerView.setLayoutManager(linearLayoutManager);
+        topListRecyclerView.setLayoutManager(linearLayoutManager);
 
         setRecyclerViewAdapter(topListWallpapersArrayList);
-        setScrollListener(toplistRecyclerView);
+        setScrollListener(topListRecyclerView);
 
-        SwipeRefreshLayout swipeRefreshLayout = toplistView.findViewById(R.id.swipe_refresh_toplist);
+        SwipeRefreshLayout swipeRefreshLayout = topListView.findViewById(R.id.swipe_refresh_toplist);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             refreshWallpapers();
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        FloatingActionButton refreshFloatingActionButton = toplistView.findViewById(R.id.refresh_floatingActionButton);
+        FloatingActionButton refreshFloatingActionButton = topListView.findViewById(R.id.refresh_floatingActionButton);
         refreshFloatingActionButton.setOnClickListener(v -> refreshWallpapers());
 
-        return toplistView;
+        return topListView;
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        //return MyActivity.this;       // For activities
-        myToplistWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
-
-        toplistRecyclerView.setAdapter(myToplistWallpapersAdapter);
+        topListWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
+        topListRecyclerView.setAdapter(topListWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {
@@ -126,7 +126,7 @@ public class ToplistFragment extends Fragment {
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
                     //Five Items before end of list
-                    getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
+                    getTopListWallpapers(retrofitServer.getToplistWallpapersCall());
                 }
             }
         });
@@ -137,7 +137,7 @@ public class ToplistFragment extends Fragment {
         and set wallpapers to recycleview adapter using getter function.
         Main reason toplistWallpapersArrayList is in fragment is because of Async nature of HTTP GET request
     */
-    private void getToplistWallpapers(Call<WallpaperList> call) {
+    private void getTopListWallpapers(Call<WallpaperList> call) {
         call.enqueue(new Callback<WallpaperList>() {
             @Override
             public void onResponse(@NonNull Call<WallpaperList> call, @NonNull Response<WallpaperList> response) {
@@ -149,7 +149,7 @@ public class ToplistFragment extends Fragment {
                     wallpaperList.parseResponse(topListWallpapersArrayList);
                     topListWallpapersMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> myToplistWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> topListWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
@@ -165,7 +165,7 @@ public class ToplistFragment extends Fragment {
     private void refreshWallpapers() {
         topListWallpapersArrayList.clear();
         retrofitServer.refreshPageNumber();
-        getToplistWallpapers(retrofitServer.getToplistWallpapersCall());
+        getTopListWallpapers(retrofitServer.getToplistWallpapersCall());
     }
 
     @Override

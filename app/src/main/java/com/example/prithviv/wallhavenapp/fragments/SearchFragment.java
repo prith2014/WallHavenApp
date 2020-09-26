@@ -50,7 +50,7 @@ public class SearchFragment extends Fragment {
     private RecyclerView searchRecyclerView;
     private SearchView searchBarView;
     private LinearLayoutManager linearLayoutManager;
-    private WallpapersAdapter mySearchWallpapersAdapter;
+    private WallpapersAdapter searchWallpapersAdapter;
     private String searchQuery;
 
     public SearchFragment() {
@@ -81,9 +81,11 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View searchView = inflater.inflate(R.layout.fragment_search, container, false);
         searchBarView = searchView.findViewById(R.id.search_bar);
+
         // Recycler view
         searchRecyclerView = searchView.findViewById(R.id.search_recycler_view);
         searchRecyclerView.setHasFixedSize(true);
+
         // Linear layout manager
         linearLayoutManager = new LinearLayoutManager(getActivity());
         searchRecyclerView.setLayoutManager(linearLayoutManager);
@@ -94,7 +96,7 @@ public class SearchFragment extends Fragment {
 
         if (getArguments() != null) {
             searchQuery = getArguments().getString(SearchManager.QUERY);
-            Log.d("Search", "Search this: " + searchQuery);
+            Log.d("SEARCH", "Search string: " + searchQuery);
             getSearchWallpapers(retrofitServer.getSearchWallpapersCall(searchQuery));
             searchBarView.setQuery(searchQuery, false);
         }
@@ -103,10 +105,8 @@ public class SearchFragment extends Fragment {
     }
 
     private void setRecyclerViewAdapter(List<Data> wallpapers) {
-        //return MyActivity.this;       // For activities
-        mySearchWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
-
-        searchRecyclerView.setAdapter(mySearchWallpapersAdapter);
+        searchWallpapersAdapter = new WallpapersAdapter(this::getActivity, wallpapers);
+        searchRecyclerView.setAdapter(searchWallpapersAdapter);
     }
 
     private void setScrollListener(RecyclerView mRecyclerView) {
@@ -114,8 +114,9 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (retrofitServer.isWallpaperLoading())
+                if (retrofitServer.isWallpaperLoading()) {
                     return;
+                }
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
@@ -134,7 +135,7 @@ public class SearchFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("Search", "Search Query Submitted: " + query);
+                Log.d("SEARCH", "Search Query Submitted: " + query);
                 searchQuery = query;
 
                 Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -148,7 +149,6 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Log.d("Search", "Search Query: " + newText);
                 return false;
             }
         });
@@ -159,21 +159,20 @@ public class SearchFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<WallpaperList> call, @NonNull Response<WallpaperList> response) {
                 if (response.isSuccessful()) {
-                    //Log.d(TAG, response.toString());
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
                     wallpaperList.parseResponse(searchWallpapersArrayList);
                     searchWallpaperMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> mySearchWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> searchWallpapersAdapter.notifyDataSetChanged());
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override
             public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
                 if (t.getMessage() != null) {
-                    Log.d("Error Toplist", t.getMessage());
+                    Log.e("SEARCH", "Error: " + t.getMessage());
                 }
             }
         });
