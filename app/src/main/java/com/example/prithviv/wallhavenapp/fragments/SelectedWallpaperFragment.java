@@ -4,15 +4,15 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.prithviv.wallhavenapp.ContextProvider;
 import com.example.prithviv.wallhavenapp.HttpRequest.RetrofitServer;
@@ -24,7 +24,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 
 import java.util.List;
 import java.util.Locale;
@@ -43,13 +42,6 @@ public class SelectedWallpaperFragment extends Fragment {
     public static final String ARG_POSITION = "position";
     public static final String ARG_ID = "ID";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private final ContextProvider contextProvider;
-
     private int selectedWallpaperPosition;
     private String selectedWallpaperID;
     private SimpleDraweeView mSimpleDraweeView;
@@ -65,8 +57,6 @@ public class SelectedWallpaperFragment extends Fragment {
     private TextView textViewTags;
 
     public SelectedWallpaperFragment(ContextProvider contextProvider) {
-        // Required empty public constructor
-        this.contextProvider = contextProvider;
         this.downloadManager = (DownloadManager) contextProvider.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
@@ -74,16 +64,11 @@ public class SelectedWallpaperFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment SelectedWallpaperFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static SelectedWallpaperFragment newInstance(String param1, String param2, ContextProvider mContextProvider) {
+    public static SelectedWallpaperFragment newInstance(ContextProvider mContextProvider) {
         SelectedWallpaperFragment fragment = new SelectedWallpaperFragment(mContextProvider);
         Bundle args = new Bundle();
-        //args.putInt(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,12 +83,7 @@ public class SelectedWallpaperFragment extends Fragment {
         Log.d(TAG, "position = " + selectedWallpaperPosition);
         Log.d(TAG, "ID = " + selectedWallpaperID);
 
-        retrofitServer = new RetrofitServer(new ContextProvider() {
-            @Override
-            public Context getContext() {
-                return getActivity();
-            }
-        });
+        retrofitServer = new RetrofitServer(this::getActivity);
         getWallpaperData(retrofitServer.getSelectedWallpaper(selectedWallpaperID));
     }
 
@@ -115,12 +95,9 @@ public class SelectedWallpaperFragment extends Fragment {
         mSimpleDraweeView = selectedWallpaperView.findViewById(R.id.selected_wallpaper_view);
 
         FloatingActionButton downloadFloatingActionButton = selectedWallpaperView.findViewById(R.id.download_floatingActionButton);
-        downloadFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("DOWNLOAD", "Download button clicked");
-                downloadWallpaper(selectedWallpaperData.getPath());
-            }
+        downloadFloatingActionButton.setOnClickListener(v -> {
+            Log.v("DOWNLOAD", "Download button clicked");
+            downloadWallpaper(selectedWallpaperData.getPath());
         });
 
         textViewCategory = selectedWallpaperView.findViewById(R.id.text_view_category);
@@ -137,7 +114,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private void getWallpaperData(Call<Wallpaper> call) {
         call.enqueue(new Callback<Wallpaper>() {
             @Override
-            public void onResponse(Call<Wallpaper> call, retrofit2.Response<Wallpaper> response) {
+            public void onResponse(@NonNull Call<Wallpaper> call, @NonNull retrofit2.Response<Wallpaper> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     assert response.body() != null;
@@ -150,8 +127,10 @@ public class SelectedWallpaperFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<Wallpaper> call, Throwable t) {
-                Log.d("Error", t.getMessage());
+            public void onFailure(@NonNull Call<Wallpaper> call, @NonNull Throwable t) {
+                if (t.getMessage() != null) {
+                    Log.d("Error", t.getMessage());
+                }
             }
         });
     }

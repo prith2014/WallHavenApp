@@ -1,6 +1,5 @@
 package com.example.prithviv.wallhavenapp.HttpRequest;
 
-import com.example.prithviv.wallhavenapp.models.Data;
 import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
 

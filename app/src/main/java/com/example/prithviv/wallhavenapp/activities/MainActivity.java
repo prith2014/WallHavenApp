@@ -5,6 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.prithviv.wallhavenapp.R;
 import com.example.prithviv.wallhavenapp.fragments.LatestFragment;
@@ -13,23 +21,11 @@ import com.example.prithviv.wallhavenapp.fragments.SettingsFragment;
 import com.example.prithviv.wallhavenapp.fragments.ToplistFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.annotation.NonNull;
-
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
 public class MainActivity extends AppCompatActivity
         implements  LatestFragment.OnFragmentInteractionListener,
                     SearchFragment.OnFragmentInteractionListener,
                     ToplistFragment.OnFragmentInteractionListener {
 
-    private static final String TAG = "Main Activity TAG";
     public static final String LATEST_FRAGMENT_TAG = "LATEST_FRAGMENT_TAG";
     public static final String TOPLIST_FRAGMENT_TAG = "TOPLIST_FRAGMENT_TAG";
 
@@ -42,31 +38,27 @@ public class MainActivity extends AppCompatActivity
     Fragment active = fragmentLatest;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_latest:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
-                    active = fragmentLatest;
-                    return true;
-                case R.id.search_dashboard:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
-                    active = fragmentSearch;
-                    return true;
-                case R.id.navigation_toplist:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
-                    active = fragmentToplist;
-                    return true;
-                case R.id.navigation_settings:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
-                    active = fragmentSettings;
-                    return true;
-            }
-            return false;
-        }
-    };
+            = item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_latest:
+                        fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
+                        active = fragmentLatest;
+                        return true;
+                    case R.id.search_dashboard:
+                        fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
+                        active = fragmentSearch;
+                        return true;
+                    case R.id.navigation_toplist:
+                        fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
+                        active = fragmentToplist;
+                        return true;
+                    case R.id.navigation_settings:
+                        fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
+                        active = fragmentSettings;
+                        return true;
+                }
+                return false;
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,10 +108,6 @@ public class MainActivity extends AppCompatActivity
             fragmentSearch = tempSearchFragment;
             active = fragmentSearch;
         }
-    }
-
-    public void setActiveFragment(Fragment fragment) {
-        active = fragment;
     }
 
     @Override

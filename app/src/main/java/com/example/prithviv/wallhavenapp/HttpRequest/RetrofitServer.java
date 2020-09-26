@@ -1,8 +1,6 @@
 package com.example.prithviv.wallhavenapp.HttpRequest;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
@@ -11,8 +9,6 @@ import com.example.prithviv.wallhavenapp.models.Wallpaper;
 import com.example.prithviv.wallhavenapp.models.WallpaperList;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 /*
@@ -69,29 +65,25 @@ public class RetrofitServer {
 
     public Call<WallpaperList> getLatestWallpapersCall() {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listLatestWallpapers(getUserSetCategories(),
+        return wallhavenAPI.listLatestWallpapers(getUserSetCategories(),
                 getUserSetPurity(), "date_added", "desc", getNextPageNumber());
-        return retroCall;
     }
 
     public Call<WallpaperList> getToplistWallpapersCall() {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listTopListWallpapers(getUserSetCategories(),
+        return wallhavenAPI.listTopListWallpapers(getUserSetCategories(),
                 getUserSetPurity(), "1M", "toplist", "desc", getNextPageNumber());
-        return retroCall;
     }
 
     public Call<WallpaperList> getSearchWallpapersCall(String searchQuery) {
         setIsWallpaperLoading(true);
-        Call<WallpaperList> retroCall = wallhavenAPI.listSearchWallpapers(searchQuery, getUserSetCategories(),
+        return wallhavenAPI.listSearchWallpapers(searchQuery, getUserSetCategories(),
                 getUserSetPurity(), "relevance", "desc", getNextPageNumber());
-        return retroCall;
     }
 
     public Call<Wallpaper> getSelectedWallpaper(String selectedWallpaperID) {
         setIsWallpaperLoading(true);
-        Call<Wallpaper> retroCall = wallhavenAPI.getWallpaper(selectedWallpaperID);
-        return retroCall;
+        return wallhavenAPI.getWallpaper(selectedWallpaperID);
     }
 
     public void refreshPageNumber() {
@@ -100,24 +92,18 @@ public class RetrofitServer {
 
     private int getNextPageNumber() {
         pageNumber++;
-        //Log.d("Page", Integer.toString(pageNumber));
         return pageNumber;
     }
 
     private String getUserSetCategories() {
-        //SharedPreferences sharedPreferences = contextProvider.getContext().getSharedPreferences("com.example.wallhavenapp", Context.MODE_PRIVATE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(contextProvider.getContext());
         boolean general = sharedPreferences.getBoolean(GENERAL_CATEGORY, true);
         boolean anime = sharedPreferences.getBoolean(ANIME_CATEGORY, true);
         boolean people = sharedPreferences.getBoolean(PEOPLE_CATEGORY, true);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(general ? "1" : "0");
-        sb.append(anime ? "1" : "0");
-        sb.append(people ? "1" : "0");
-        //Log.d("Categories", sb.toString());
-
-        return sb.toString();
+        return (general ? "1" : "0") +
+                (anime ? "1" : "0") +
+                (people ? "1" : "0");
     }
 
     private String getUserSetPurity() {
@@ -126,11 +112,8 @@ public class RetrofitServer {
         boolean sketchy = sharedPreferences.getBoolean(SKETCHY_PURITY, false);
         boolean nsfw = sharedPreferences.getBoolean(NSFW_PURITY, false);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(sfw ? "1" : "0");
-        sb.append(sketchy ? "1" : "0");
-        sb.append(nsfw ? "1" : "0");
-
-        return sb.toString();
+        return (sfw ? "1" : "0") +
+                (sketchy ? "1" : "0") +
+                (nsfw ? "1" : "0");
     }
 }
