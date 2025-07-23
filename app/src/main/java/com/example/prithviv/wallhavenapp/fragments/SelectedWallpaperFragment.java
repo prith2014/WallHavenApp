@@ -47,7 +47,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private SimpleDraweeView mSimpleDraweeView;
     private RetrofitServer retrofitServer;
     private Data selectedWallpaperData;
-    private DownloadManager downloadManager;
+    private final DownloadManager downloadManager;
 
     private TextView textViewCategory;
     private TextView textViewResolution;
@@ -167,14 +167,15 @@ public class SelectedWallpaperFragment extends Fragment {
     }
 
     private void downloadWallpaper(String url) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        Uri uri = Uri.parse(url);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setTitle("Wallpaper " + selectedWallpaperID);
         request.setDescription("Downloading");
         request.allowScanningByMediaScanner();
         request.setMimeType(selectedWallpaperData.getFileType());
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, selectedWallpaperID);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.getLastPathSegment());
 
         downloadManager.enqueue(request);
         Log.v("DOWNLOAD", "Download request enqueued");

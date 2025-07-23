@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity
 
     Fragment active = fragmentLatest;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
                 switch (item.getItemId()) {
                     case R.id.navigation_latest:
