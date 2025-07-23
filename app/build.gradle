@@ -3,9 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 36
     defaultConfig {
-        namespace 'com.example.prithviv.wallhavenapp'
+        namespace='com.example.prithviv.wallhavenapp'
         applicationId "com.example.prithviv.wallhavenapp"
         minSdkVersion 23
+        // TODO: Initial commit was sdk 29. Need to fix all breaking changes starting from 29 -> 30
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
