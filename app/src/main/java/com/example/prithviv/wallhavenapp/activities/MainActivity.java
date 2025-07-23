@@ -37,36 +37,33 @@ public class MainActivity extends AppCompatActivity
 
     Fragment active = fragmentLatest;
 
-    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = item -> {
-                switch (item.getItemId()) {
-                    case R.id.navigation_latest:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
-                        active = fragmentLatest;
-                        return true;
-                    case R.id.search_dashboard:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
-                        active = fragmentSearch;
-                        return true;
-                    case R.id.navigation_toplist:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
-                        active = fragmentToplist;
-                        return true;
-                    case R.id.navigation_settings:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
-                        active = fragmentSettings;
-                        return true;
-                }
-                return false;
-            };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_latest:
+                    fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
+                    active = fragmentLatest;
+                    return true;
+                case R.id.search_dashboard:
+                    fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
+                    active = fragmentSearch;
+                    return true;
+                case R.id.navigation_toplist:
+                    fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
+                    active = fragmentToplist;
+                    return true;
+                case R.id.navigation_settings:
+                    fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
+                    active = fragmentSettings;
+                    return true;
+            }
+            return false;
+        });
 
         //Fragments
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentSettings, "fragSettings").hide(fragmentSettings).commit();
