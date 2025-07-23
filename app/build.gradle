@@ -5,9 +5,9 @@ android {
     defaultConfig {
         namespace='com.example.prithviv.wallhavenapp'
         applicationId "com.example.prithviv.wallhavenapp"
-        minSdkVersion 23
-        // TODO: Initial commit was sdk 29. Need to fix all breaking changes starting from 29 -> 30
-        targetSdkVersion 31
+        minSdkVersion 26
+        // TODO: Breaking changes 34 -> 35, mainly edge to edge support
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -47,7 +47,7 @@ public class SelectedWallpaperFragment extends Fragment {
     private SimpleDraweeView mSimpleDraweeView;
     private RetrofitServer retrofitServer;
     private Data selectedWallpaperData;
-    private DownloadManager downloadManager;
+    private final DownloadManager downloadManager;
 
     private TextView textViewCategory;
     private TextView textViewResolution;

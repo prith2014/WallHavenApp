@@ -32,11 +32,11 @@ public class RetrofitServer {
     private static final String SKETCHY_PURITY = "com.example.wallhavenapp.sketchypurity";
     private static final String NSFW_PURITY = "com.example.wallhavenapp.nsfwpurity";
 
-    private Retrofit retrofit;
-    private WallhavenAPI wallhavenAPI;
+    private final Retrofit retrofit;
+    private final WallhavenAPI wallhavenAPI;
     private boolean isWallpaperLoading;
     private int pageNumber;
-    private ContextProvider contextProvider;
+    private final ContextProvider contextProvider;
 
     public RetrofitServer(ContextProvider contextProvider) {
         retrofit = new Retrofit.Builder()
