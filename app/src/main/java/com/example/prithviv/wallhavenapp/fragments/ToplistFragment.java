@@ -146,10 +146,11 @@ public class ToplistFragment extends Fragment {
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
+                    int prevSize = topListWallpapersArrayList.size();
                     wallpaperList.parseResponse(topListWallpapersArrayList);
                     topListWallpapersMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> topListWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> topListWallpapersAdapter.notifyItemRangeInserted(prevSize - 1, wallpaperList.getData().size()));
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }

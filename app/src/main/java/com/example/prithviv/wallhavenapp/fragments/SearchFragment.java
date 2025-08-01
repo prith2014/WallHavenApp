@@ -162,10 +162,11 @@ public class SearchFragment extends Fragment {
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
+                    int prevSize = searchWallpapersArrayList.size();
                     wallpaperList.parseResponse(searchWallpapersArrayList);
                     searchWallpaperMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> searchWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> searchWallpapersAdapter.notifyItemRangeInserted(prevSize - 1, wallpaperList.getData().size()));
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
