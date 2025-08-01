@@ -11,6 +11,8 @@ import android.view.MenuInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -40,8 +42,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_container), (v, insets) -> {
+            int topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(0, topInset, 0, 0);
+            return WindowInsetsCompat.CONSUMED;
+        });
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

@@ -6,7 +6,7 @@ android {
         namespace='com.example.prithviv.wallhavenapp'
         applicationId "com.example.prithviv.wallhavenapp"
         minSdkVersion 26
-        // TODO: Breaking changes 34 -> 35, mainly edge to edge support
+        // TODO: Breaking changes 35 -> 36, mainly back button
         targetSdkVersion 35
         versionCode 1
         versionName "1.0"
