@@ -153,7 +153,10 @@ public class LatestFragment extends Fragment {
         });
     }
 
+    // TODO: Refactor same code in both Latest and Toplist fragments
     private void refreshWallpapers() {
+        Log.d("LATEST", "Refreshing wallpapers");
+        latestWallpapersAdapter.notifyItemRangeRemoved(0, latestWallpapersArrayList.size());
         latestWallpapersArrayList.clear();
         retrofitServer.refreshPageNumber();
         getLatestWallpapers(retrofitServer.getLatestWallpapersCall());
