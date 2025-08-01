@@ -115,6 +115,8 @@ public class LatestFragment extends Fragment {
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                // TODO: Maybe preload sooner than 5 items before end of list
                 int fiveItemsBeforeEnd = totalItemCount - 5;
 
                 if (pastVisibleItems + visibleItemCount >= fiveItemsBeforeEnd) {
@@ -133,10 +135,11 @@ public class LatestFragment extends Fragment {
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
+                    int prevSize = latestWallpapersArrayList.size();
                     wallpaperList.parseResponse(latestWallpapersArrayList);
                     latestWallpapersMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> latestWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> latestWallpapersAdapter.notifyItemRangeInserted(prevSize - 1, wallpaperList.getData().size()));
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
@@ -162,7 +165,7 @@ public class LatestFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + " must implement OnFragmentInteractionListener");
         }
     }

@@ -44,24 +44,25 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_latest:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
-                    active = fragmentLatest;
-                    return true;
-                case R.id.search_dashboard:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
-                    active = fragmentSearch;
-                    return true;
-                case R.id.navigation_toplist:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
-                    active = fragmentToplist;
-                    return true;
-                case R.id.navigation_settings:
-                    fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
-                    active = fragmentSettings;
-                    return true;
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_latest) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
+                active = fragmentLatest;
+                return true;
+            } else if (itemId == R.id.search_dashboard) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
+                active = fragmentSearch;
+                return true;
+            } else if (itemId == R.id.navigation_toplist) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
+                active = fragmentToplist;
+                return true;
+            } else if (itemId == R.id.navigation_settings) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
+                active = fragmentSettings;
+                return true;
             }
+
             return false;
         });
 
