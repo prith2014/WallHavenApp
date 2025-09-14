@@ -3,14 +3,18 @@ package com.example.prithviv.wallhavenapp.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -37,36 +41,40 @@ public class MainActivity extends AppCompatActivity
 
     Fragment active = fragmentLatest;
 
-    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = item -> {
-                switch (item.getItemId()) {
-                    case R.id.navigation_latest:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
-                        active = fragmentLatest;
-                        return true;
-                    case R.id.search_dashboard:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
-                        active = fragmentSearch;
-                        return true;
-                    case R.id.navigation_toplist:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
-                        active = fragmentToplist;
-                        return true;
-                    case R.id.navigation_settings:
-                        fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
-                        active = fragmentSettings;
-                        return true;
-                }
-                return false;
-            };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_container), (v, insets) -> {
+            int topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            v.setPadding(0, topInset, 0, 0);
+            return WindowInsetsCompat.CONSUMED;
+        });
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_latest) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentLatest).commit();
+                active = fragmentLatest;
+                return true;
+            } else if (itemId == R.id.search_dashboard) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentSearch).commit();
+                active = fragmentSearch;
+                return true;
+            } else if (itemId == R.id.navigation_toplist) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentToplist).commit();
+                active = fragmentToplist;
+                return true;
+            } else if (itemId == R.id.navigation_settings) {
+                fragmentManager.beginTransaction().hide(active).show(fragmentSettings).commit();
+                active = fragmentSettings;
+                return true;
+            }
+
+            return false;
+        });
 
         //Fragments
         fragmentManager.beginTransaction().add(R.id.main_container, fragmentSettings, "fragSettings").hide(fragmentSettings).commit();
@@ -96,6 +104,11 @@ public class MainActivity extends AppCompatActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void handleIntent(Intent intent) {

@@ -146,23 +146,26 @@ public class ToplistFragment extends Fragment {
                     WallpaperList wallpaperList = response.body();
                     assert wallpaperList != null;
 
+                    int prevSize = topListWallpapersArrayList.size();
                     wallpaperList.parseResponse(topListWallpapersArrayList);
                     topListWallpapersMeta = wallpaperList.getMeta();
 
-                    handler.post(() -> topListWallpapersAdapter.notifyDataSetChanged());
+                    handler.post(() -> topListWallpapersAdapter.notifyItemRangeInserted(prevSize - 1, wallpaperList.getData().size()));
                     retrofitServer.setIsWallpaperLoading(false);
                 }
             }
             @Override
             public void onFailure(@NonNull Call<WallpaperList> call, @NonNull Throwable t) {
                 if (t.getMessage() != null) {
-                    Log.d("Error Toplist", t.getMessage());
+                    Log.d("TOPLIST", "GET request error: " + t.getMessage());
                 }
             }
         });
     }
 
     private void refreshWallpapers() {
+        Log.d("TOPLIST", "Refreshing wallpapers");
+        topListWallpapersAdapter.notifyItemRangeRemoved(0, topListWallpapersArrayList.size());
         topListWallpapersArrayList.clear();
         retrofitServer.refreshPageNumber();
         getTopListWallpapers(retrofitServer.getToplistWallpapersCall());
